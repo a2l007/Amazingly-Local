@@ -1,0 +1,6 @@
+DB Name: amlocal
+
+  create table AL_LOGIN(LoginId int NOT NULL, UserId int NOT NULL, Username varchar(30) NOT NULL, Password varchar(50) NOT NULL, PRIMARY KEY (LoginId));
+  create table AL_USERS (UserId int NOT NULL, FirstName varchar(30) NOT NULL, LastName varchar(30), EmailAddress varchar(30) NOT NULL, PhoneNumber int NOT NULL, MailingAddress varchar(100) NOT NULL,       PRIMARY KEY (UserId));
+
+
