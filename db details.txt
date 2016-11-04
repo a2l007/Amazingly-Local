@@ -2,5 +2,9 @@ DB Name: amlocal
 
   create table AL_LOGIN(LoginId int NOT NULL, UserId int NOT NULL, Username varchar(30) NOT NULL, Password varchar(50) NOT NULL, PRIMARY KEY (LoginId));
   create table AL_USERS (UserId int NOT NULL, FirstName varchar(30) NOT NULL, LastName varchar(30), EmailAddress varchar(30) NOT NULL, PhoneNumber int NOT NULL, MailingAddress varchar(100) NOT NULL,       PRIMARY KEY (UserId));
+  CREATE table AL_PRODUCT_TYPE ( ProductTypeId int NOT NULL, TypeName varchar(30), PRIMARY KEY (ProductTypeId));
+  CREATE table AL_PRODUCTS (ProductId int NOT NULL, ProductTypeId int NOT NULL, ProductName varchar(50) NOT NULL, Weight float NOT NULL, NutritionInfo varchar(200), PRIMARY KEY (ProductId), FOREIGN KEY(ProductTypeId) REFERENCES AL_PRODUCT_TYPE(ProductTypeId));
+  CREATE TABLE AL_VENDORS (VendorId int NOT NULL, VendorName varchar(30) NOT NULL, FarmAddress varchar(100), MailingAddress varchar(100), VendorRating float, PRIMARY KEY (VendorId));
+  CREATE TABLE AL_INVENTORY( InventoryId int NOT NULL, VendorId int NOT NULL, ProductId int NOT NULL, Quantity int, Sale varchar(30), SalePrice float, ProductRating float, PRIMARY KEY(InventoryId), FOREIGN KEY(VendorId) REFERENCES AL_VENDORS(VendorId), FOREIGN KEY(ProductId) REFERENCES AL_PRODUCTS(ProductId));
 
 
