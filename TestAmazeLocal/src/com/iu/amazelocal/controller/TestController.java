@@ -55,7 +55,7 @@ public class TestController {
 	    if(auth.login(emailAddress, password)){
 	    	System.out.println("Login successful");
 	    	httpSession.setAttribute(sessionExists, true);
-	    	httpSession.setAttribute(userName,"chutu");
+	    	httpSession.setAttribute(userName,"User1");
 	    }
 	    else
 	    	System.out.println("Incorrect password");
