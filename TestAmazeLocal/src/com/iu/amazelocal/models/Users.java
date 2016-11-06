@@ -26,7 +26,7 @@ public class Users {
 	  private String EmailAddress;
 	  
 		@Column(nullable = false)
-	  private long PhoneNUmber;
+	  private long PhoneNumber;
 
 	  public long getUserId() {
 		return UserId;
@@ -61,11 +61,11 @@ public class Users {
 	}
 
 	public long getPhoneNUmber() {
-		return PhoneNUmber;
+		return PhoneNumber;
 	}
 
 	public void setPhoneNUmber(long phoneNUmber) {
-		PhoneNUmber = phoneNUmber;
+		PhoneNumber = phoneNUmber;
 	}
 
 	public String getMailingAddress() {
@@ -89,7 +89,7 @@ public class Users {
 	    this.FirstName = FirstName;
 	    this.LastName = LastName;
 	    this.EmailAddress=EmailAddress;
-	    this.PhoneNUmber=PhoneNumber;
+	    this.PhoneNumber=PhoneNumber;
 	    this.MailingAddress=MailingAddress;
 	  }
 

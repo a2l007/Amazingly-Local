@@ -10,7 +10,9 @@
     <meta name="description" content="Obaju e-commerce template">
     <meta name="author" content="Ondrej Svestka | ondrejsvestka.cz">
     <meta name="keywords" content="">
-
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
     <title>
         Obaju : e-commerce template
     </title>
@@ -41,7 +43,21 @@
 </head>
 
 <body>
-
+<script type="text/javascript">
+$(document).ready(function () {
+var productTypes;
+        $.ajax({  
+           url: "fetchTypes",  
+           type: "GET",    
+           success: function (data) {  
+           alert("hehh0");
+           },  
+           error: function () {  
+              alert("Error while processing your request");  
+           }  
+        });  
+});
+</script>
     <!-- *** TOPBAR ***
  _________________________________________________________ -->
     <div id="top">
@@ -954,14 +970,14 @@
 
                         <p class="text-muted">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
 
-                        <form>
+                        <form action="testsession" method="post">
                             <div class="input-group">
 
-                                <input type="text" class="form-control">
+                                <input type="text" id="testsessionid" class="form-control">
 
                                 <span class="input-group-btn">
 
-			    <button class="btn btn-default" type="button">Subscribe!</button>
+			    <button class="btn btn-default" type="submit">Subscribe!</button>
 
 			</span>
 

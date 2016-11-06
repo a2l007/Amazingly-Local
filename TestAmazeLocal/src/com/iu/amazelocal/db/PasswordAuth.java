@@ -31,7 +31,7 @@ public class PasswordAuth {
 			// for the first time.
 			String saltedPassword = SALT + password;
 			String hashedPassword = generateHash(saltedPassword);
-			System.out.println("Hashed pwd"+password+"-> "+hashedPassword);
+			System.out.println("username is "+userName);
 			String storedPasswordHash = user.fetchPasswordfromEmail(userName);
 			System.out.println("Stored password is"+storedPasswordHash);
 
@@ -62,5 +62,20 @@ public class PasswordAuth {
 
 			return hash.toString();
 		}
-
+		public String fetchSecurityQuestion(String email){
+			UserCrud uc=new UserCrud();
+			String secQuestion=uc.fetchQuestionFromEmail(email);
+			return secQuestion;
+		}
+		public Boolean validateAnswer(String email, String sAnswer){
+			UserCrud uc=new UserCrud();
+			String secAnswer=uc.fetchAnswerFromEmail(email);
+			System.out.println("Sec answer is"+secAnswer);
+			if(secAnswer.equals(sAnswer)){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
 	}
