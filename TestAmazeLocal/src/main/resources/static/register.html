@@ -10,9 +10,10 @@
     <meta name="description" content="Obaju e-commerce template">
     <meta name="author" content="Ondrej Svestka | ondrejsvestka.cz">
     <meta name="keywords" content="">
-
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <title>
-        Obaju : e-commerce template
+        Amazingly Local!
     </title>
 
     <meta name="keywords" content="">
@@ -25,6 +26,7 @@
     <link href="css/animate.min.css" rel="stylesheet">
     <link href="css/owl.carousel.css" rel="stylesheet">
     <link href="css/owl.theme.css" rel="stylesheet">
+    <link href="css/img-size.css" rel="stylesheet">
 
     <!-- theme stylesheet -->
     <link href="css/style.default.css" rel="stylesheet" id="theme-stylesheet">
@@ -41,6 +43,20 @@
 </head>
 
 <body>
+<script type="text/javascript">
+			$(document).ready(function() {
+				$('#usertypeselect').change(function(){
+			        if( $(this).val()==="Vendor"){
+			      		  $("#vendor_form").show();
+			      		  $("#customer_form").hide();
+			        }
+			        else{
+			        	$("#vendor_form").hide();
+				        $("#customer_form").show();      	
+			        }
+			    });
+				});
+				</script>
     <!-- *** TOPBAR ***
  _________________________________________________________ -->
     <div id="top">
@@ -115,7 +131,7 @@
             <div class="navbar-header">
 
                 <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
-                    <img src="img/logo.png" alt="Obaju logo" class="hidden-xs">
+                    <img src="img/al_logo.png" alt="Obaju logo" class="lg" class="hidden-xs">
                     <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
                 </a>
                 <div class="navbar-buttons">
@@ -140,71 +156,62 @@
                     <li class="active"><a href="index.html">Home</a>
                     </li>
                     <li class="dropdown yamm-fw">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Men <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Shop <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <div class="yamm-content">
                                     <div class="row">
                                         <div class="col-sm-3">
-                                            <h5>Clothing</h5>
+                                            <h5>Vegetables</h5>
                                             <ul>
-                                                <li><a href="category.html">T-shirts</a>
+                                                <li><a href="category.html">Tomato</a>
                                                 </li>
-                                                <li><a href="category.html">Shirts</a>
+                                                <li><a href="category.html">Potato</a>
                                                 </li>
-                                                <li><a href="category.html">Pants</a>
+                                                <li><a href="category.html">Onion</a>
                                                 </li>
-                                                <li><a href="category.html">Accessories</a>
+                                                <li><a href="category.html">Broccoli</a>
+                                                </li>
+                                                <li><a href="category.html">Egg Plant</a>
+                                                </li>
+                                                <li><a href="category.html">Broccoli</a>
                                                 </li>
                                             </ul>
                                         </div>
                                         <div class="col-sm-3">
-                                            <h5>Shoes</h5>
+                                            <h5>Fruits</h5>
                                             <ul>
-                                                <li><a href="category.html">Trainers</a>
+                                                <li><a href="category.html">Apple</a>
                                                 </li>
-                                                <li><a href="category.html">Sandals</a>
+                                                <li><a href="category.html">Citrus fruits</a>
                                                 </li>
-                                                <li><a href="category.html">Hiking shoes</a>
+                                                <li><a href="category.html">Banana</a>
                                                 </li>
-                                                <li><a href="category.html">Casual</a>
+                                                <li><a href="category.html">Melon</a>
                                                 </li>
                                             </ul>
                                         </div>
                                         <div class="col-sm-3">
-                                            <h5>Accessories</h5>
+                                            <h5>Meat</h5>
                                             <ul>
-                                                <li><a href="category.html">Trainers</a>
+                                                <li><a href="category.html">Beef</a>
                                                 </li>
-                                                <li><a href="category.html">Sandals</a>
+                                                <li><a href="category.html">Chicken</a>
                                                 </li>
-                                                <li><a href="category.html">Hiking shoes</a>
+                                                <li><a href="category.html">Pork</a>
                                                 </li>
-                                                <li><a href="category.html">Casual</a>
-                                                </li>
-                                                <li><a href="category.html">Hiking shoes</a>
-                                                </li>
-                                                <li><a href="category.html">Casual</a>
-                                                </li>
+                                                <li><a href="category.html">Turkey</a>
+                                                </li>                                  
                                             </ul>
                                         </div>
                                         <div class="col-sm-3">
-                                            <h5>Featured</h5>
+                                            <h5>Dairy Products</h5>
                                             <ul>
-                                                <li><a href="category.html">Trainers</a>
+                                                <li><a href="category.html">Milk</a>
                                                 </li>
-                                                <li><a href="category.html">Sandals</a>
+                                                <li><a href="category.html">Butter</a>
                                                 </li>
-                                                <li><a href="category.html">Hiking shoes</a>
-                                                </li>
-                                            </ul>
-                                            <h5>Looks and trends</h5>
-                                            <ul>
-                                                <li><a href="category.html">Trainers</a>
-                                                </li>
-                                                <li><a href="category.html">Sandals</a>
-                                                </li>
-                                                <li><a href="category.html">Hiking shoes</a>
+                                                <li><a href="category.html">Cheese</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -215,158 +222,13 @@
                         </ul>
                     </li>
 
-                    <li class="dropdown yamm-fw">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Ladies <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <div class="yamm-content">
-                                    <div class="row">
-                                        <div class="col-sm-3">
-                                            <h5>Clothing</h5>
-                                            <ul>
-                                                <li><a href="category.html">T-shirts</a>
-                                                </li>
-                                                <li><a href="category.html">Shirts</a>
-                                                </li>
-                                                <li><a href="category.html">Pants</a>
-                                                </li>
-                                                <li><a href="category.html">Accessories</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <h5>Shoes</h5>
-                                            <ul>
-                                                <li><a href="category.html">Trainers</a>
-                                                </li>
-                                                <li><a href="category.html">Sandals</a>
-                                                </li>
-                                                <li><a href="category.html">Hiking shoes</a>
-                                                </li>
-                                                <li><a href="category.html">Casual</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <h5>Accessories</h5>
-                                            <ul>
-                                                <li><a href="category.html">Trainers</a>
-                                                </li>
-                                                <li><a href="category.html">Sandals</a>
-                                                </li>
-                                                <li><a href="category.html">Hiking shoes</a>
-                                                </li>
-                                                <li><a href="category.html">Casual</a>
-                                                </li>
-                                                <li><a href="category.html">Hiking shoes</a>
-                                                </li>
-                                                <li><a href="category.html">Casual</a>
-                                                </li>
-                                            </ul>
-                                            <h5>Looks and trends</h5>
-                                            <ul>
-                                                <li><a href="category.html">Trainers</a>
-                                                </li>
-                                                <li><a href="category.html">Sandals</a>
-                                                </li>
-                                                <li><a href="category.html">Hiking shoes</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="banner">
-                                                <a href="#">
-                                                    <img src="img/banner.jpg" class="img img-responsive" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="banner">
-                                                <a href="#">
-                                                    <img src="img/banner2.jpg" class="img img-responsive" alt="">
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /.yamm-content -->
-                            </li>
-                        </ul>
-                    </li>
+					<li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe </b></a>                       
+					</li>
 
-                    <li class="dropdown yamm-fw">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Template <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <div class="yamm-content">
-                                    <div class="row">
-                                        <div class="col-sm-3">
-                                            <h5>Shop</h5>
-                                            <ul>
-                                                <li><a href="index.html">Homepage</a>
-                                                </li>
-                                                <li><a href="category.html">Category - sidebar left</a>
-                                                </li>
-                                                <li><a href="category-right.html">Category - sidebar right</a>
-                                                </li>
-                                                <li><a href="category-full.html">Category - full width</a>
-                                                </li>
-                                                <li><a href="detail.html">Product detail</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <h5>User</h5>
-                                            <ul>
-                                                <li><a href="register.html">Register / login</a>
-                                                </li>
-                                                <li><a href="customer-orders.html">Orders history</a>
-                                                </li>
-                                                <li><a href="customer-order.html">Order history detail</a>
-                                                </li>
-                                                <li><a href="customer-wishlist.html">Wishlist</a>
-                                                </li>
-                                                <li><a href="customer-account.html">Customer account / change password</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <h5>Order process</h5>
-                                            <ul>
-                                                <li><a href="basket.html">Shopping cart</a>
-                                                </li>
-                                                <li><a href="checkout1.html">Checkout - step 1</a>
-                                                </li>
-                                                <li><a href="checkout2.html">Checkout - step 2</a>
-                                                </li>
-                                                <li><a href="checkout3.html">Checkout - step 3</a>
-                                                </li>
-                                                <li><a href="checkout4.html">Checkout - step 4</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <h5>Pages and blog</h5>
-                                            <ul>
-                                                <li><a href="blog.html">Blog listing</a>
-                                                </li>
-                                                <li><a href="post.html">Blog Post</a>
-                                                </li>
-                                                <li><a href="faq.html">FAQ</a>
-                                                </li>
-                                                <li><a href="text.html">Text page</a>
-                                                </li>
-                                                <li><a href="text-right.html">Text page - right sidebar</a>
-                                                </li>
-                                                <li><a href="404.html">404 page</a>
-                                                </li>
-                                                <li><a href="contact.html">Contact</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /.yamm-content -->
-                            </li>
-                        </ul>
+                    <li >
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Farmers </b></a>
+                       
                     </li>
                 </ul>
 
@@ -426,7 +288,7 @@
                     </ul>
 
                 </div>
-
+				
                 <div class="col-md-6">
                     <div class="box">
                         <h1>New account</h1>
@@ -436,8 +298,12 @@
                         <p class="text-muted">If you have any questions, please feel free to <a href="contact.html">contact us</a>, our customer service center is working for you 24/7.</p>
 
                         <hr>
-
-                         <form action="/save" method="post">
+							<select name="usertypeselect" id="usertypeselect">
+								<option value="Customer" selected="selected">Customer</option>
+								<option value="Vendor">Vendor</option>
+							</select>
+                         <form action="/save" method="post" name="customer_form" id="customer_form">
+                         
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="text" class="form-control" name="email">
@@ -472,9 +338,57 @@
                                 <input type="text" class="form-control" name="phoneno">
                             </div>
                              <div class="form-group">
-                                <label for="address">Address</label>
+                                <label for="address">Mailing Address</label>
                                 <input type="text" class="form-control" name="address">
                             </div>
+                             <input type="hidden" class="form-control" name="usertype" value="customer">
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i> Register</button>
+                            </div>
+                        </form>
+                        
+                        
+                        <form action="/savevendor" method="post" name="vendor_form" id="vendor_form" style="display:none">
+                         <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" name="email">
+                            </div>
+                             <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" name="password">
+                            </div>
+                            <div class="form group">
+                            <label for="option">Security Question</label>
+                            <br />
+                                <select name="securityq">
+                           		<option value="What is your mother's last name?">What is your mother's last name?</option>
+								<option value="What is the name of your first pet?">What is the name of your first pet?</option>
+								<option value="What is name of your kindergarden school?">What is name of your kindergarden school?</option>
+							</select>
+                            </div>
+                            <div class="form group">
+                            <label for="SAnswer">Security Answer</label>
+                            <input type="text" class="form-control" name="securitya">
+                            </div>
+                            <div class="form-group">
+                                <label for="FName">Seller Name</label>
+                                <input type="text" class="form-control" name="vendorname">
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneno">Phone Number</label>
+                                <input type="text" class="form-control" name="phoneno">
+                            </div>
+                             <div class="form-group">
+                                <label for="address">Mailing Address</label>
+                                <input type="text" class="form-control" name="mailingaddress">
+                            </div>
+                             <div class="form-group">
+                                <label for="address">Farm Address</label>
+                                <input type="text" class="form-control" name="farmaddress">
+                            </div>
+                             <input type="hidden" class="form-control" name="usertype" value="vendor">
+                            
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i> Register</button>
                             </div>
@@ -487,8 +401,7 @@
                         <h1>Login</h1>
 
                         <p class="lead">Already our customer?</p>
-                        <p class="text-muted">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies
-                            mi vitae est. Mauris placerat eleifend leo.</p>
+                        
 
                         <hr>
 
@@ -500,6 +413,8 @@
                              <div class="form-group">
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control" name="password">
+                                <a href="forgotpw.html">Forgot Password?</a>
+                                
                             </div>
                            
                             <div class="text-center">
@@ -521,7 +436,9 @@
         <div id="footer" data-animate="fadeInUp">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-3 col-sm-6">
+                <div class="col-md-1">
+                      </div>
+                    <div class="col-md-3">
                         <h4>Pages</h4>
 
                         <ul>
@@ -535,8 +452,10 @@
                             </li>
                         </ul>
 
-                        <hr>
-
+                        </div>
+                        <div class="col-md-1">
+                      </div>
+						<div class="col-md-3">
                         <h4>User section</h4>
 
                         <ul>
@@ -551,49 +470,19 @@
                     </div>
                     <!-- /.col-md-3 -->
 
-                    <div class="col-md-3 col-sm-6">
-
-                        <h4>Top categories</h4>
-
-                        <h5>Men</h5>
-
-                        <ul>
-                            <li><a href="category.html">T-shirts</a>
-                            </li>
-                            <li><a href="category.html">Shirts</a>
-                            </li>
-                            <li><a href="category.html">Accessories</a>
-                            </li>
-                        </ul>
-
-                        <h5>Ladies</h5>
-                        <ul>
-                            <li><a href="category.html">T-shirts</a>
-                            </li>
-                            <li><a href="category.html">Skirts</a>
-                            </li>
-                            <li><a href="category.html">Pants</a>
-                            </li>
-                            <li><a href="category.html">Accessories</a>
-                            </li>
-                        </ul>
-
-                        <hr class="hidden-md hidden-lg">
-
-                    </div>
-                    <!-- /.col-md-3 -->
-
-                    <div class="col-md-3 col-sm-6">
+                    
+					<div class="col-md-1">
+                      </div>
+                    <div class="col-md-3">
 
                         <h4>Where to find us</h4>
 
-                        <p><strong>Obaju Ltd.</strong>
-                            <br>13/25 New Avenue
-                            <br>New Heaven
-                            <br>45Y 73J
-                            <br>England
+                        <p><strong>Amazingly local</strong>
+                            <br>107 S Indiana Ave
+                            <br>Bloomington
+                            <br>IN 47405
                             <br>
-                            <strong>Great Britain</strong>
+                            <strong>USA</strong>
                         </p>
 
                         <a href="contact.html">Go to contact page</a>
@@ -605,49 +494,14 @@
 
 
 
-                    <div class="col-md-3 col-sm-6">
-
-                        <h4>Get the news</h4>
-
-                        <p class="text-muted">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-
-                        <form>
-                            <div class="input-group">
-
-                                <input type="text" class="form-control">
-
-                                <span class="input-group-btn">
-
-			    <button class="btn btn-default" type="button">Subscribe!</button>
-
-			</span>
-
-                            </div>
-                            <!-- /input-group -->
-                        </form>
-
-                        <hr>
-
-                        <h4>Stay in touch</h4>
-
-                        <p class="social">
-                            <a href="#" class="facebook external" data-animate-hover="shake"><i class="fa fa-facebook"></i></a>
-                            <a href="#" class="twitter external" data-animate-hover="shake"><i class="fa fa-twitter"></i></a>
-                            <a href="#" class="instagram external" data-animate-hover="shake"><i class="fa fa-instagram"></i></a>
-                            <a href="#" class="gplus external" data-animate-hover="shake"><i class="fa fa-google-plus"></i></a>
-                            <a href="#" class="email external" data-animate-hover="shake"><i class="fa fa-envelope"></i></a>
-                        </p>
-
-
-                    </div>
-                    <!-- /.col-md-3 -->
-
                 </div>
                 <!-- /.row -->
 
             </div>
             <!-- /.container -->
         </div>
+        <!-- /#footer -->
+
         <!-- /#footer -->
 
         <!-- *** FOOTER END *** -->
