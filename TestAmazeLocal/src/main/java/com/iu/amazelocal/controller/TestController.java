@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,8 +22,13 @@ import com.iu.amazelocal.db.InventoryCrud;
 import com.iu.amazelocal.db.PasswordAuth;
 import com.iu.amazelocal.db.RecipeCrud;
 import com.iu.amazelocal.db.UserCrud;
+import com.iu.amazelocal.models.Inventory;
+import com.iu.amazelocal.models.InventoryGrid;
+import com.iu.amazelocal.models.InventoryMini;
+import com.iu.amazelocal.models.JqGridData;
 import com.iu.amazelocal.models.Login;
 import com.iu.amazelocal.models.LoginDao;
+import com.iu.amazelocal.models.ProductSubTypes;
 import com.iu.amazelocal.models.ProductType;
 import com.iu.amazelocal.models.Recipe;
 import com.iu.amazelocal.models.Users;
@@ -169,56 +175,7 @@ public class TestController {
 			 return "N";
 		 }
 	  }
-	@RequestMapping(method = RequestMethod.GET, value="/fetchTypes")
-    @ResponseBody
-    public String getProductTypes() {
-       ArrayList<ProductType> type = new ArrayList<ProductType>();
-
-      try {
-          System.out.println("fetch types");
-          InventoryCrud inventory=new InventoryCrud();
-          type = inventory.fetchProductTypes();
-      }
-      catch(Exception ex) {
-          System.out.println("Error"+ex.getMessage());
-          ex.printStackTrace();
-        return ex.getMessage();
-      }
-      return "Yes";
-    }
-    //public String getAllInventories(boolean _search, int rows, int page, String sidx, String sord)
-     @RequestMapping(method = RequestMethod.GET, value = "/getInventories")
-     @ResponseBody        
-    public String getAllInventories(
-     @RequestParam("_search") Boolean _search,
-     @RequestParam("nd") String nd, 
-     @RequestParam("rows") int rows, 
-     @RequestParam("page") int page, 
-     @RequestParam("sidx") String sidx, 
-     @RequestParam("sord") String sord) {
-       try{
-          return "Hee"; 
-       }
-       catch(Exception ex){
-           System.out.println("Error"+ex.getMessage());
-           ex.printStackTrace();
-           return ex.getMessage();   
-       }
-     }
-     @RequestMapping(method = RequestMethod.GET, value = "/saveProduct")
-     @ResponseBody        
-    public String saveNewProduct() {
-     //public String getAllInventories(@RequestBody Grid prmNames, HttpServletRequest request){
-       try{
-           System.out.println("Hi hey how are you?");
-          return "Hee"; 
-       }
-       catch(Exception ex){
-           System.out.println("Error"+ex.getMessage());
-           ex.printStackTrace();
-           return ex.getMessage();   
-       }
-     }
+	   
      @RequestMapping(method = RequestMethod.POST, value = "/addrecipe")
     public String addNewRecipe(String RecipeName, String ingredients, String instructions, 
     		@RequestParam("RecipeImage") MultipartFile file, String description) throws IOException {
@@ -237,10 +194,10 @@ public class TestController {
      public String doLogout(){
     	 httpSession.invalidate();
     	 return "logout";
-     }
+     }	
      
      @RequestMapping(method = RequestMethod.POST, value = "/search")
-     public String search(String searchStr) throws IOException {
+     public String search(String searchStr,String criteria) throws IOException {
      	/*
      	 * Need to search for ProductName in AL_PRODUCTS, VendorName in AL_VENDORS, TypeName in AL_PRODUCT_TYPE
      	 * Everything is finally linked to the AL_INVENTORY table 
@@ -248,6 +205,16 @@ public class TestController {
      	 * AL_PRODUCTS: ProductName: ProductId > AL_INVENTORY
      	 * AL_PRODUCT_TYPE:TypeName:ProductTypeId > AL_PRODUCTS : ProductId > AL_INVENTORY
      	 */
+    	 InventoryCrud inv=new InventoryCrud();
+    	 ArrayList<InventoryMini> searchResults=new ArrayList<InventoryMini>();
+    	 //find Inventory from AL_VENDORS;
+		 ArrayList<InventoryMini> vendorBasedInv=inv.fetchProductFromVendor(criteria);
+    	 if(criteria.equals("All")){
+    	 }
+    	 else {
+    		 ArrayList<InventoryMini> typeBasedInventory=inv.fetchProductsByType(criteria,searchStr);
+
+    	 }
     	 return "Results";
 }
      
@@ -256,4 +223,108 @@ public class TestController {
          model.addAttribute("name", name);
          return "hello";
      }
+     @RequestMapping(method = RequestMethod.GET, value = "/category")
+     public String fetchProductInfo(String subtype) throws IOException {
+     	 return "hello";
+      }
+     
+     @RequestMapping(method = RequestMethod.GET, value = "/getInventories")
+     @ResponseBody        
+     public String getAllInventories(
+    	     @RequestParam("_search") Boolean _search,
+    	     @RequestParam("nd") String nd, 
+    	     @RequestParam("rows") int rows, 
+    	     @RequestParam("page") int page, 
+    	     @RequestParam("sidx") String sidx, 
+    	     @RequestParam("sord") String sord) {
+		 ArrayList<InventoryGrid> inventories = new ArrayList<InventoryGrid>();
+		 String products = null;
+	    try {
+	    	 InventoryCrud inventory=new InventoryCrud();
+	    	 inventories = inventory.fetchInventories();
+	    	 int totalPages = (int) Math.floor((inventories.size()/rows)+1);
+	    	 JqGridData gridData = new JqGridData(totalPages, page,inventories.size(),inventories);
+	    	 ModelMap model = new ModelMap();
+	    	 model.put("products", inventories);
+	    	 ObjectMapper mapper = new ObjectMapper();
+	    	 products = mapper.writeValueAsString(gridData);
+	    	 return products; 
+	    }
+       catch(Exception ex){
+           System.out.println("Error"+ex.getMessage());
+           ex.printStackTrace();
+           return ex.getMessage();   
+       }
+    }
+	 
+ @RequestMapping(method = RequestMethod.GET, value="/fetchTypes")
+	  @ResponseBody
+	  public String[] getProductTypes() {
+		 ArrayList<ProductType> type = new ArrayList<ProductType>();
+		 ArrayList<ProductSubTypes> subType = new ArrayList<ProductSubTypes>();
+		 String productTypes = null;
+		 String productSubTypes = null;
+	    try {
+	    	 InventoryCrud inventory=new InventoryCrud();
+	    	 type = inventory.fetchProductTypes();
+	    	 subType = inventory.fetchProductSubTypes();
+	    	 ObjectMapper mapper = new ObjectMapper();
+	    	 productTypes = mapper.writeValueAsString(type);
+	    	 productSubTypes = mapper.writeValueAsString(subType);
+	    	 System.out.println(productSubTypes);
+	    }
+	    catch(Exception ex) {
+	    	System.out.println("Error"+ex.getMessage());
+	    	ex.printStackTrace();
+	      return new String [] { "Error Message", ex.getMessage()};
+	    }
+	    return new String [] { productTypes, productSubTypes};
+	} 
+ 	 
+	 @RequestMapping(method = RequestMethod.POST, value = "/saveProduct")
+     public String saveNewProduct(String prodname, String desc, String prodcat, String prodsubcat, 
+    		 String subcatname, String price, String quantity, String unit, String cal, String salepercent,
+    		 @RequestParam("uploadfile") MultipartFile[] file) throws IOException {
+	   try{
+		   String fileName = null;
+		   String fileNames = null;
+	    	String msg = "";
+	    	String filePath = new File(".").getCanonicalPath();
+	    	System.out.println(filePath+" filePath");
+			if (file != null && file.length >0) {
+	    		for(int i =0 ;i< file.length; i++){
+	    			
+		            	fileName = file[i].getOriginalFilename();
+		                fileNames += fileName + ","; 
+		                
+		            	File convFile = new File(file[i].getOriginalFilename());
+		           	    convFile.createNewFile(); 
+		           	    FileOutputStream fos = new FileOutputStream(convFile); 
+		           	    fos.write(file[i].getBytes());
+		           	    fos.close();
+		                System.out.println("You have successfully uploaded " + fileName +"<br/>");
+	    		}
+			}
+			
+   	    long subCatId = Long.parseLong(prodsubcat);
+   	    InventoryCrud inventory = new InventoryCrud();
+   	 
+   	    //New product sub category is to be added.
+   	    if(Long.parseLong(prodsubcat) == -1){
+   	    	ProductSubTypes newSubType = new ProductSubTypes(Integer.parseInt(prodcat), Integer.parseInt(prodsubcat), subcatname);
+   	    	subCatId = inventory.insertProductSubType(newSubType);
+   	    }
+   	  
+	   Inventory product = new Inventory(prodname, desc, subCatId, Float.parseFloat(price), 
+			   Integer.parseInt(quantity), unit, Float.parseFloat(cal), Float.parseFloat(salepercent),fileNames); 
+	  
+  	   inventory.insertProduct(product);
+  	   	   return "redirect:Inventory.html";
+	   }
+	   catch(Exception ex){
+		   System.out.println("Error"+ex.getMessage());
+	       ex.printStackTrace();
+	       return ex.getMessage();   
+	   }
+	 }
 }

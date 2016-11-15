@@ -1,22 +1,25 @@
-
  $(document).ready(function () {
-
              jQuery("#inventoryTable").jqGrid({
-                 colNames: ['Inventory Id', 'Name', 'Price', 'Quantity', 'Unit', 'Category Id', 'Type','Sub Category Id','Sub Type','Calories', 'Sale %', 'Sale Approved', 'Rating'],
+                 url: "/getInventories",
+                 datatype: "json",
+                 //jsonReader: {repeatitems: false, id: "ref"},
+                 colNames: ['Inventory Id', 'Name', 'Description', 'Price', 'Quantity', 'Unit', 'Category Id', 'Category','Sub Category Id','Sub Category','Calories Per Unit', 'Sale Percent', 'Sale Approved', 'Average Rating'],
 		         colModel: [
-		         {name: 'InventoryId', index: 'InventoryId', key: true, hidden:true},
-		         {name: 'Name', index: 'Name', width: 50 },
-		         {name: 'Price', index: 'Price', width: 30, sorttype: "float"},
-		         {name: 'Quantity', index: 'Quantity', width: 30, sorttype: "int"},
-		         {name: 'Unit', index: 'Unit', width: 10},   
-		         {name: 'CategoryId', index: 'CategoryId', hidden:true},  
-		         {name: 'Category', index: 'Category', width: 30},
-		         {name: 'SubCategoryId',index: 'SubCategoryId',hidden:true},
-		         {name: 'SubCategory', index: 'SubCategory', width: 40},
-		         {name: 'Calories', index: 'Calories', width: 35},
-		         {name: 'Sale', index: 'Sale', width: 20},
-		         {name: 'SaleStatus', index: 'SaleStatus', width: 20},
-		         {name: 'AvgRating', index:'AvgRating', width:30}
+		         {name: 'inventoryId', index: 'inventoryId', key: true, hidden: true},
+		         {name: 'productName', index: 'productName', width: 50, formatter:'showlink', //predefined formatter to display hyperlink
+                         formatoptions:{baseLinkUrl:'AddProduct.html'}},
+		         {name: 'description', index: 'description', width: 80, hidden: true},
+		         {name: 'price', index: 'price', width: 20, sorttype: "float"},
+		         {name: 'quantity', index: 'quantity', width: 25, sorttype: "int"},
+		         {name: 'unit', index: 'unit', width: 20},   
+		         {name: 'productTypeId', index: 'productTypeId', hidden: true},  
+		         {name: 'productType', index: 'TypeName', width: 30},
+		         {name: 'productSubId',index: 'productSubId', hidden: true},
+		         {name: 'productSubType', index: 'productSubType', width: 30},
+		         {name: 'calories', index: 'calories', width: 35},
+		         {name: 'sale', index: 'sale', width: 30},
+		         {name: 'saleApproved', index: 'saleApproved', width: 30},
+		         {name: 'productRating', index:'productRating', width: 30}
                ],
                	 rowNum: 20,  
                  rowList:[20,60,100],
@@ -34,19 +37,5 @@
       sortable: true  
              });
              
-    var inventory = ["InventoryId", "Name","Price", "Quantity", "Unit", "CategoryId", "Category","SubCategoryId","SubCategory", "Calories","Sale", "SaleStatus","AvgRating"];
-    var mydata = [];
-     var data = [["1", "Honey Crisp Apple", "$1.99", "39", "each","1","Fruits","2","Apples","100","0","NA","4.2"], [12, "Bacon",  "$10.99", "120", "packet","1","Meat","2","Pork","1245","0","NA","4.5"]];
-    
-      for (var i = 0; i < data.length; i++) {
-        mydata[i] = {};
-        for (var j = 0; j < data[i].length; j++) {
-            mydata[i][inventory[j]] = data[i][j];
-        }
-    }
-    
-    for (var i = 0; i <= mydata.length; i++) {
-        $("#inventoryTable").jqGrid('addRowData', i + 1, mydata[i]);
-    }
-        
+$("#inventoryTable").jqGrid('hideCol', 'cb');
  });
