@@ -153,7 +153,7 @@
                                             <h5><%=productType %></h5>
 											  <ul>
                                             <% for(String productSubType:productSubTypeList){ %>
-                                                <li><a href="category.html&subtype=<%=productSubType%>"><%=productSubType %> </a>
+                                                <li><a href="category?subtype=<%=productSubType%>"><%=productSubType %> </a>
                                                 </li>
                                                <%} %>
                                             </ul>

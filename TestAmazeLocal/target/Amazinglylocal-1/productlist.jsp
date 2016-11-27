@@ -226,18 +226,18 @@
 
             <div class="clearfix collapse in" id="search">
 
-                <form class="navbar-form" role="search">
+                <form class="navbar-form" role="search" action="search" method="post">
                     <div class="input-group">
-                    <select name="usertypeselect" id="usertypeselect" class="form-control">
+                    <select name="criteria" id="criteria" class="form-control">
    								<option value="All" selected="selected">All Departments</option>
-								<option value="Vegetables" selected="selected">Vegetables</option>
-								<option value="Fruits">Fruits</option>
-								<option value="Dairy">Dairy</option>
-								<option value="Meat">Meat</option>
+								<option value="VEGETABLES" selected="selected">Vegetables</option>
+								<option value="FRUITS">Fruits</option>
+								<option value="DAIRY">Dairy</option>
+								<option value="MEAT">Meat</option>
 								
 								
 							</select>
-                        <input type="text" class="form-control" placeholder="Search">
+                        <input type="text" class="form-control" placeholder="Search"  name="searchStr" id="searchStr">
                         <span class="input-group-btn">
 
 			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>

@@ -211,4 +211,28 @@ public class UserCrud {
 			return null;
 		}
 		}
+	
+	public int getUserIdFromEmail(String email){
+		Connection con = ConnectionFactory.getConnObject();
+		String selectPasswordSQL = " SELECT UserId FROM AL_LOGIN WHERE UserName= ?";
+		
+		try{
+			PreparedStatement stmt = con.prepareStatement(selectPasswordSQL);
+			stmt.setString(1, email);
+			ResultSet res=stmt.executeQuery();
+			System.out.println("email is"+email);
+			if(res.next()){
+				int que=res.getInt(1);
+				System.out.println("question is"+que);
+				return que;
+			}
+			else
+				return 0;
+
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return 0;
+		}
+		}
 }

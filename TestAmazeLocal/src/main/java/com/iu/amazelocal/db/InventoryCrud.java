@@ -21,10 +21,14 @@ public class InventoryCrud {
 			String insertProdSQL = "INSERT INTO AL_INVENTORY (InventoryId, VendorId, ProductSubId,"
 			+" ProductName, Description, Quantity, Price, Unit, Calories, Sale,ImageName)" 
 			+"VALUES " + "(?,?,?,?,?,?,?,?,?,?,?)";
-			Long inventoryId=AppConstants.USERIDSEQ+12;
+			Long inventoryId=AppConstants.INVENTORYSEQ;
+			Long newinventoryId=UserCrud.fetchLatestId("AL_INVENTORY", "InventoryId");
+			if(newinventoryId!=0L){
+				inventoryId=newinventoryId;
+			}
 			PreparedStatement stmt = con.prepareStatement(insertProdSQL);
 			stmt.setLong(1, inventoryId);
-			stmt.setLong(2, 10000);
+			stmt.setLong(2, 2);
 			stmt.setLong(3, i.getProductSubId());
 			stmt.setString(4, i.getProductName());
 			stmt.setString(5, i.getDescription());
@@ -111,17 +115,18 @@ public class InventoryCrud {
 	}
 	
 	
-	public ArrayList<InventoryGrid> fetchInventories(){
+	public ArrayList<InventoryGrid> fetchInventories(int vendorId){
 		Connection con = ConnectionFactory.getConnObject();
 		String selectProductsSQL = "SELECT INV.InventoryId, PTYPE.ProductTypeId, PTYPE.TypeName," 
 		+" INV.ProductSubId, PSUBTYPE.ProdSubTypeName,INV.ProductName, INV.Description, INV.Quantity,"
 		+" INV.Price, INV.Unit, INV.Calories, INV.Sale, INV.ProductRating, SaleApproved "
 		+" FROM AL_INVENTORY INV LEFT JOIN AL_PRODUCTSUBTYPE PSUBTYPE ON INV.ProductSubId = PSUBTYPE.ProductSubId "
-		+" LEFT JOIN AL_PRODUCT_TYPE PTYPE ON PTYPE.ProductTypeId = PSUBTYPE.ProductTypeId WHERE VendorId = 2";
+		+" LEFT JOIN AL_PRODUCT_TYPE PTYPE ON PTYPE.ProductTypeId = PSUBTYPE.ProductTypeId WHERE VendorId = ? ";
 		
 		ArrayList<InventoryGrid> inventories = new ArrayList<InventoryGrid>();
 		try{
 			PreparedStatement stmt = con.prepareStatement(selectProductsSQL);
+			stmt.setInt(1, vendorId);
 			ResultSet res=stmt.executeQuery();
 			while(res.next()){
 				InventoryGrid prod = new InventoryGrid();
@@ -228,14 +233,25 @@ public class InventoryCrud {
 		}
 	}
 	
-	public ArrayList<InventoryMini> fetchProductFromVendor(String vendorName){
+	public ArrayList<InventoryMini> fetchProductWithoutType(String searchStr){
 		try{
 		Connection con = ConnectionFactory.getConnObject();
 		// here sonoo is database name, root is username and password
-		String selectTypeSQL = "SELECT i.InventoryId, i.ProductName, i.ImageName, i.ProductRating FROM AL_VENDORS v, AL_INVENTORY i "
-				+ "WHERE v.VendorId=i.VendorId AND v.VendorName LIKE '%?%'";
+		String selectTypeSQL = " SELECT i.inventoryid,i.productname,i.imagename, i.productrating FROM "
+				+ "  AL_PRODUCTSUBTYPE st, AL_INVENTORY i WHERE "
+				+ " st.productsubid = i.productsubid "
+				+ "AND st.prodsubtypename LIKE ? "
+				+ "UNION SELECT i.inventoryid, i.productname, i.imagename, i.productrating "
+				+ "FROM   AL_VENDORS v, AL_INVENTORY i WHERE  v.vendorid = i.vendorid "
+				+ "AND v.vendorname LIKE ? UNION "
+				+ "SELECT i.inventoryid, i.productname, i.imagename, i.productrating "
+				+ "FROM  AL_INVENTORY i WHERE  i.productname LIKE ? ";  
+
 		PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
-		stmt.setString(1, vendorName);
+		stmt.setString(1, "%"+searchStr+"%");
+		stmt.setString(2, "%"+searchStr+"%");
+		stmt.setString(3, "%"+searchStr+"%");
+
 		ResultSet res=stmt.executeQuery();
 		ArrayList<InventoryMini> inventoryList=new ArrayList<InventoryMini>();
 		while (res.next()){
@@ -254,16 +270,26 @@ public class InventoryCrud {
 		}
 	}
 	
-	public ArrayList<InventoryMini> fetchProductsByType(String type,String subType){
+	public ArrayList<InventoryMini> fetchProductsByType(String type,String searchStr){
 		try{
 		Connection con = ConnectionFactory.getConnObject();
 		// here sonoo is database name, root is username and password
-		String selectTypeSQL = "SELECT i.InventoryId, i.ProductName, i.ImageName, i.ProductRating from AL_PRODUCT_TYPE t, AL_PRODUCTSUBTYPE st, AL_INVENTORY i "
-				+ "WHERE t.ProductTypeId=st.ProductTypeId AND st.ProductSubId=i.ProductSubId "
-				+ "AND t.TypeName=? AND st.ProdSubTypeName=?";
+		String selectTypeSQL = " SELECT i.inventoryid,i.productname,i.imagename, i.productrating FROM "
+				+ "  AL_PRODUCT_TYPE t, AL_PRODUCTSUBTYPE st, AL_INVENTORY i WHERE "
+				+ " t.producttypeid = st.producttypeid AND st.productsubid = i.productsubid "
+				+ "AND t.typename = ? AND st.prodsubtypename LIKE ? "
+				+ "UNION SELECT i.inventoryid, i.productname, i.imagename, i.productrating "
+				+ "FROM   AL_VENDORS v, AL_INVENTORY i WHERE  v.vendorid = i.vendorid "
+				+ "AND v.vendorname LIKE ? UNION "
+				+ "SELECT i.inventoryid, i.productname, i.imagename, i.productrating "
+				+ "FROM   AL_INVENTORY i WHERE  i.productname LIKE ? "; 
 		PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
+	
 		stmt.setString(1, type);
-		stmt.setString(2, subType);
+		stmt.setString(2, "%"+searchStr+"%");
+		stmt.setString(3, "%"+searchStr+"%");
+		stmt.setString(4, "%"+searchStr+"%");
+
 		ResultSet res=stmt.executeQuery();
 		ArrayList<InventoryMini> inventoryList=new ArrayList<InventoryMini>();
 		while (res.next()){
@@ -274,6 +300,36 @@ public class InventoryCrud {
 			InventoryMini im=new InventoryMini(invId,prName,prodRating,imgName);
 			inventoryList.add(im);
 		}
+		return inventoryList;
+		}
+		catch(SQLException e){
+			System.out.println(e);
+			return null;
+		}
+	}
+	
+	public ArrayList<InventoryMini> listProductsByType(String type){
+		try{
+		Connection con = ConnectionFactory.getConnObject();
+		// here sonoo is database name, root is username and password
+		String selectTypeSQL = "  SELECT i.inventoryid,i.productname,i.imagename, i.productrating FROM"
+				+ "   AL_PRODUCTSUBTYPE st, AL_INVENTORY i WHERE st.productsubid = i.productsubid" 
+				+ "   AND  st.prodsubtypename = ? "; 
+		PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
+	
+		stmt.setString(1, type);
+		System.out.println("Type is"+type);
+		ResultSet res=stmt.executeQuery();
+		ArrayList<InventoryMini> inventoryList=new ArrayList<InventoryMini>();
+		while (res.next()){
+			long invId=res.getLong("InventoryId");
+			String prName=res.getString("ProductName");
+			String imgName=res.getString("ImageName");
+			float prodRating=res.getFloat("ProductRating");
+			InventoryMini im=new InventoryMini(invId,prName,prodRating,imgName);
+			inventoryList.add(im);
+		}
+		System.out.println("Inventory size is"+inventoryList.size());
 		return inventoryList;
 		}
 		catch(SQLException e){

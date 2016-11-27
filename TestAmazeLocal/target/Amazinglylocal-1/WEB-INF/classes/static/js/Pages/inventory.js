@@ -1,6 +1,6 @@
  $(document).ready(function () {
              jQuery("#inventoryTable").jqGrid({
-                 url: "/getInventories",
+                 url: "getInventories",
                  datatype: "json",
                  //jsonReader: {repeatitems: false, id: "ref"},
                  colNames: ['Inventory Id', 'Name', 'Description', 'Price', 'Quantity', 'Unit', 'Category Id', 'Category','Sub Category Id','Sub Category','Calories Per Unit', 'Sale Percent', 'Sale Approved', 'Average Rating'],

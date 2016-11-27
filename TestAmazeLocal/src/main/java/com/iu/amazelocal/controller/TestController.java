@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.iu.amazelocal.db.InventoryCrud;
 import com.iu.amazelocal.db.PasswordAuth;
 import com.iu.amazelocal.db.RecipeCrud;
+import com.iu.amazelocal.db.RecipeDetailCrud;
 import com.iu.amazelocal.db.UserCrud;
 import com.iu.amazelocal.models.Inventory;
 import com.iu.amazelocal.models.InventoryGrid;
@@ -34,8 +36,7 @@ import com.iu.amazelocal.models.Recipe;
 import com.iu.amazelocal.models.Users;
 import com.iu.amazelocal.models.UsersDao;
 import com.iu.amazelocal.models.Vendors;
-
-
+import com.iu.amazelocal.utils.AppConstants;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,6 +51,7 @@ public class TestController {
 	private static final String userName="userName";
 	private static final String userEmail="userEmail";
 	private static final String userType="userType";
+	private static final String userId="userId";
 
 	@RequestMapping(method = RequestMethod.POST, value="/save")
 	  @Transactional
@@ -101,12 +103,13 @@ public class TestController {
   	
 	    PasswordAuth auth=new PasswordAuth();
 	    UserCrud user = new UserCrud();
-	    System.out.println("initial email address is"+ emailAddress);
 	    if(auth.login(emailAddress, password)){
 	    	System.out.println("Login successful");
 	    	httpSession.setAttribute(sessionExists, true);
 	    	httpSession.setAttribute(userName,emailAddress);
 	    	httpSession.setAttribute(userType, user.getUserTypeFromEmail(emailAddress));
+	    	httpSession.setAttribute(userId, user.getUserIdFromEmail(emailAddress));
+
 		    return "indexsession";
 	    }
 	    else
@@ -197,7 +200,7 @@ public class TestController {
      }	
      
      @RequestMapping(method = RequestMethod.POST, value = "/search")
-     public String search(String searchStr,String criteria) throws IOException {
+     public String search(String searchStr,String criteria, HttpServletRequest request) throws IOException {
      	/*
      	 * Need to search for ProductName in AL_PRODUCTS, VendorName in AL_VENDORS, TypeName in AL_PRODUCT_TYPE
      	 * Everything is finally linked to the AL_INVENTORY table 
@@ -208,14 +211,17 @@ public class TestController {
     	 InventoryCrud inv=new InventoryCrud();
     	 ArrayList<InventoryMini> searchResults=new ArrayList<InventoryMini>();
     	 //find Inventory from AL_VENDORS;
-		 ArrayList<InventoryMini> vendorBasedInv=inv.fetchProductFromVendor(criteria);
     	 if(criteria.equals("All")){
+    		 searchResults=inv.fetchProductWithoutType(searchStr);
     	 }
     	 else {
-    		 ArrayList<InventoryMini> typeBasedInventory=inv.fetchProductsByType(criteria,searchStr);
+    		 System.out.println("Here2");
+    		 searchResults=inv.fetchProductsByType(criteria,searchStr);
 
     	 }
-    	 return "Results";
+    	 request.setAttribute("searchresults", searchResults);
+    	// System.out.println(searchResults.get(0).getProductName());
+    	 return "searchresults";
 }
      
      @RequestMapping("/hello")
@@ -224,8 +230,15 @@ public class TestController {
          return "hello";
      }
      @RequestMapping(method = RequestMethod.GET, value = "/category")
-     public String fetchProductInfo(String subtype) throws IOException {
-     	 return "hello";
+     public String fetchProductInfo(@RequestParam("subtype") String subtype) throws IOException {
+    	 InventoryCrud inv=new InventoryCrud();
+    	 ArrayList<InventoryMini> searchResults=new ArrayList<InventoryMini>();
+    	 //find Inventory from AL_VENDORS;
+    	 searchResults=inv.listProductsByType(subtype);
+    	 System.out.println("Size is "+searchResults.size());
+    	 httpSession.setAttribute("displayresults", searchResults);
+    	// System.out.println(searchResults.get(0).getProductName());
+    	 return "categoryresults";
       }
      
      @RequestMapping(method = RequestMethod.GET, value = "/getInventories")
@@ -241,7 +254,8 @@ public class TestController {
 		 String products = null;
 	    try {
 	    	 InventoryCrud inventory=new InventoryCrud();
-	    	 inventories = inventory.fetchInventories();
+	    	 int vendorId=(int)httpSession.getAttribute(userId);
+	    	 inventories = inventory.fetchInventories(vendorId);
 	    	 int totalPages = (int) Math.floor((inventories.size()/rows)+1);
 	    	 JqGridData gridData = new JqGridData(totalPages, page,inventories.size(),inventories);
 	    	 ModelMap model = new ModelMap();
@@ -286,19 +300,26 @@ public class TestController {
     		 String subcatname, String price, String quantity, String unit, String cal, String salepercent,
     		 @RequestParam("uploadfile") MultipartFile[] file) throws IOException {
 	   try{
+		   System.out.println("Here in saveproduct");
 		   String fileName = null;
-		   String fileNames = null;
+		   StringBuffer fileNames = new StringBuffer("");
 	    	String msg = "";
 	    	String filePath = new File(".").getCanonicalPath();
-	    	System.out.println(filePath+" filePath");
+	    	System.out.println(filePath+" filePathe");
 			if (file != null && file.length >0) {
 	    		for(int i =0 ;i< file.length; i++){
 	    			
-		            	fileName = file[i].getOriginalFilename();
-		                fileNames += fileName + ","; 
+		            	
+	    			fileName = new StringBuffer("images/").append(file[i].getOriginalFilename()).toString();
+	    			System.out.println("Filename is"+fileName);
+	    			if(i>0){
+	                	fileNames.append(",");
+	                }
+	    			fileNames.append(fileName); 
 		                
-		            	File convFile = new File(file[i].getOriginalFilename());
+		            	File convFile = new File(new StringBuffer(AppConstants.IMAGELOCATION).append(fileName).toString());
 		           	    convFile.createNewFile(); 
+		           	    System.out.println(convFile.getAbsolutePath());
 		           	    FileOutputStream fos = new FileOutputStream(convFile); 
 		           	    fos.write(file[i].getBytes());
 		           	    fos.close();
@@ -316,7 +337,7 @@ public class TestController {
    	    }
    	  
 	   Inventory product = new Inventory(prodname, desc, subCatId, Float.parseFloat(price), 
-			   Integer.parseInt(quantity), unit, Float.parseFloat(cal), Float.parseFloat(salepercent),fileNames); 
+			   Integer.parseInt(quantity), unit, Float.parseFloat(cal), Float.parseFloat(salepercent),fileNames.toString()); 
 	  
   	   inventory.insertProduct(product);
   	   	   return "redirect:Inventory.html";
@@ -327,4 +348,35 @@ public class TestController {
 	       return ex.getMessage();   
 	   }
 	 }
+	 @RequestMapping(method = RequestMethod.GET, value = "/edit")     
+	    public String getInventoryDetails(
+	            @RequestParam(value = "id", required=false) int invId,
+	            HttpServletRequest request ) {
+	              Inventory invDetails = new Inventory();
+	        try {
+	             InventoryCrud inventory=new InventoryCrud();
+	             invDetails = inventory.fetchInventoryDetails(invId);
+	             request.setAttribute("inv", invDetails );
+	             ObjectMapper mapper = new ObjectMapper();
+	             System.out.println(mapper.writeValueAsString(request.getAttribute("inv")));
+	            return "edititem";
+	        }
+	      catch(Exception ex){
+	          System.out.println("Error" + ex.getMessage());
+	          ex.printStackTrace();
+	          return ex.getMessage();   
+	      }
+	   }
+	 
+	 @RequestMapping(method = RequestMethod.GET, value = "/viewrecipe")
+     public String viewrecipe(
+             //@RequestParam(value = "RecipeId", required=false) Long RecipeId,
+             HttpServletRequest request) {
+             long RecipeId = Long.parseLong(request.getParameter("RecipeId"));
+             Recipe rec = new Recipe();
+             RecipeDetailCrud recipedetail=new RecipeDetailCrud();
+             rec = recipedetail.displayRecipe(RecipeId);
+             httpSession.setAttribute("Rec", rec);
+        return "viewrecipe";
+}
 }

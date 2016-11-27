@@ -3,7 +3,7 @@ var ProductSubTypes;
 
 $(document).ready(function () {
          $.ajax({  
-            url: "/fetchTypes",  
+            url: "fetchTypes",  
             type: "GET",    
             success: function (data) {  
             ProductTypes = $.parseJSON(data[0])
