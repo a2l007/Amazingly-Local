@@ -299,7 +299,7 @@
                         <p class="text-muted">Please try again </p>
                         <hr>
 
-                        <form action="/login" method="post">
+                        <form action="login" method="post">
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="text" class="form-control" name="emailAddress">

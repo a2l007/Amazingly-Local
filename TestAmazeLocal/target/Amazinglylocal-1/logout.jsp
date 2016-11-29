@@ -302,7 +302,7 @@
 								<option value="Customer" selected="selected">Customer</option>
 								<option value="Vendor">Vendor</option>
 							</select>
-                         <form action="/save" method="post" name="customer_form" id="customer_form">
+                         <form action="save" method="post" name="customer_form" id="customer_form">
                          
                             <div class="form-group">
                                 <label for="email">Email</label>
@@ -349,7 +349,7 @@
                         </form>
                         
                         
-                        <form action="/savevendor" method="post" name="vendor_form" id="vendor_form" style="display:none">
+                        <form action="savevendor" method="post" name="vendor_form" id="vendor_form" style="display:none">
                          <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="text" class="form-control" name="email">

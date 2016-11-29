@@ -221,7 +221,8 @@ public class TestController {
     	 }
     	 request.setAttribute("searchresults", searchResults);
     	// System.out.println(searchResults.get(0).getProductName());
-    	 return "searchresults";
+    	// return "searchresults";
+    	 return "searchrst";
 }
      
      @RequestMapping("/hello")

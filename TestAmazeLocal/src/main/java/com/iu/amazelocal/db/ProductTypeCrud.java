@@ -49,7 +49,9 @@ public class ProductTypeCrud {
 		try{
 		Connection con = ConnectionFactory.getConnObject();
 		// here sonoo is database name, root is username and password
-		String selectTypeSQL = "SELECT i.InventoryId, i.ProductName, i.ImageName, i.ProductRating from AL_INVENTORY i, AL_PRODUCTSUBTYPE p WHERE i.ProductSubId=p.ProductSubId "
+		String selectTypeSQL = "SELECT i.InventoryId, i.ProductName, i.ImageName, i.ProductRating,v.vendorname "
+				+ "from AL_INVENTORY i, AL_PRODUCTSUBTYPE p, AL_VENDORS v WHERE i.ProductSubId=p.ProductSubId "
+				+ "AND i.vendorid=v.vendorid "
 				+ "AND p.ProdSubTypeName=?";
 		PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
 		stmt.setString(1, subType);
@@ -60,7 +62,8 @@ public class ProductTypeCrud {
 			String prName=res.getString("ProductName");
 			String imgName=res.getString("ImageName");
 			float prodRating=res.getFloat("ProductRating");
-			InventoryMini im=new InventoryMini(invId,prName,prodRating,imgName);
+			String vendorName=res.getString("VendorName");
+			InventoryMini im=new InventoryMini(invId,prName,prodRating,imgName,vendorName);
 			inventoryList.add(im);
 		}
 		return inventoryList;
