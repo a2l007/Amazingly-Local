@@ -17,7 +17,7 @@
     <meta name="keywords" content="">
 
     <title>
-        Obaju : e-commerce template
+        Amazingly Local!
     </title>
 
     <meta name="keywords" content="">
@@ -42,7 +42,9 @@
 
     <link rel="shortcut icon" href="favicon.png">
 
-
+	<%@page import="com.iu.amazelocal.models.ShopCart"%>
+	<%@page import="com.iu.amazelocal.db.ShopCartCrud"%>
+	<%@page import="java.util.ArrayList"%>
 
 </head>
 
@@ -121,8 +123,17 @@
                         <span class="sr-only">Toggle search</span>
                         <i class="fa fa-search"></i>
                     </button>
-                    <a class="btn btn-default navbar-toggle" href="basket.html">
-                        <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs">3 items in cart</span>
+                    <a class="btn btn-default navbar-toggle" href="cart.jsp">
+                    
+                    <%  ShopCartCrud cart = new ShopCartCrud();
+                                   ArrayList<ShopCart> cartItems = new ArrayList<ShopCart>();
+                                   ShopCart orderDetails = new ShopCart();
+                                   Long uId = (Long)session.getAttribute("userId");
+                                   orderDetails = cart.fetchOrderDetails(uId);
+                                   int OrderQuantity = 0;
+                                   if(orderDetails != null){
+                                   OrderQuantity = orderDetails.getOrderQuantity();}%>
+                        <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs"><%=OrderQuantity %> items in cart</span>
                     </a>
                 </div>
             </div>
@@ -175,10 +186,11 @@
             </div>
             <!--/.nav-collapse -->
 
+            <!-- COPY FOR SEARCH BAR FROM HERE -->
             <div class="navbar-buttons">
 
                 <div class="navbar-collapse collapse right" id="basket-overview">
-                    <a href="basket.html" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">3 items in cart</span></a>
+                    <a href="basket.html" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"><%=OrderQuantity %> items in cart</span></a>
                 </div>
                 <!--/.nav-collapse -->
 
@@ -193,19 +205,19 @@
 
             <div class="clearfix collapse in" id="search">
 
-                <form class="navbar-form" role="search">
-                    <div class="input-group">
-                    <select name="usertypeselect" id="usertypeselect" class="form-control">
+                <form class="navbar-form" role="search" action="search" method="post">
+                    <div class="row">
+                    <select name="criteria" id="criteria" class="form-control">
    								<option value="All" selected="selected">All Departments</option>
-								<option value="Vegetables" selected="selected">Vegetables</option>
-								<option value="Fruits">Fruits</option>
-								<option value="Dairy">Dairy</option>
-								<option value="Meat">Meat</option>
+								<option value="VEGETABLES" selected="selected">Vegetables</option>
+								<option value="FRUITS">Fruits</option>
+								<option value="DAIRY">Dairy</option>
+								<option value="MEAT">Meat</option>
 								
 								
 							</select>
-                        <input type="text" class="form-control" placeholder="Search">
-                        <span class="input-group-btn">
+                        <input type="text" class="form-control" placeholder="Search"  name="searchStr" id="searchStr">
+                        <span>
 
 			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
 
@@ -214,6 +226,7 @@
                 </form>
 
             </div>
+            <!-- COPY FOR SEARCH BAR TILL HERE -->
             <!--/.nav-collapse -->
 
         </div>
@@ -238,11 +251,7 @@
                     </ul>
 
                     <div class="box">
-                        <h1>Recipes</h1>
-                        <p>You can't just eat good food. You've got to talk about it too.</br>
-                         - Kurt Vonnegut
-                        </p>
-  
+                        <h2 align="center"><%=request.getParameter("subtype") %></h2>  
                     <div class="row products">
  					<% 
 					ArrayList<InventoryMini> list = (ArrayList<InventoryMini>) session.getAttribute("displayresults");
@@ -256,6 +265,8 @@
                                         <div class="front">
                                             <a href="RecipeDetail.html">
                                                 <img src="<%=item.getImageName()%>" alt="" class="img-responsive">
+             <!--<img src="/home/atul/workspace/TestAmazeLocal/src/main/resources/static/images/feta.jpg" alt="" class="img-responsive">-->
+                               
                                             </a>
                                         </div>
                                         <div class="back">

@@ -1,10 +1,16 @@
 package com.iu.amazelocal.db;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import com.iu.amazelocal.config.ConnectionFactory;
+import com.iu.amazelocal.models.SaleApprovalGrid;
+import com.iu.amazelocal.models.UserRegisterDao;
 import com.iu.amazelocal.models.Users;
+import com.iu.amazelocal.models.VendorRevenueDao;
 import com.iu.amazelocal.models.Vendors;
 import com.iu.amazelocal.utils.AppConstants;
 
@@ -14,7 +20,8 @@ public class UserCrud {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = ConnectionFactory.getConnObject();
 			// here sonoo is database name, root is username and password
-			String insertTableSQL = "INSERT INTO AL_USERS " + "VALUES " + "(?,?,?,?,?,?)";
+			String insertTableSQL = "INSERT INTO AL_USERS (UserId,FirstName,LastName,EmailAddress,PhoneNumber,MailingAddress)" 
+			+ " VALUES " + "(?,?,?,?,?,?)";
 			Long userId=AppConstants.USERIDSEQ;
 			PreparedStatement stmt = con.prepareStatement(insertTableSQL);
 			Long newUserId=UserCrud.fetchLatestId("AL_USERS", "UserId");
@@ -212,7 +219,7 @@ public class UserCrud {
 		}
 		}
 	
-	public int getUserIdFromEmail(String email){
+	public long getUserIdFromEmail(String email){
 		Connection con = ConnectionFactory.getConnObject();
 		String selectPasswordSQL = " SELECT UserId FROM AL_LOGIN WHERE UserName= ?";
 		
@@ -222,7 +229,7 @@ public class UserCrud {
 			ResultSet res=stmt.executeQuery();
 			System.out.println("email is"+email);
 			if(res.next()){
-				int que=res.getInt(1);
+				long que=res.getLong(1);
 				System.out.println("question is"+que);
 				return que;
 			}
@@ -235,4 +242,114 @@ public class UserCrud {
 			return 0;
 		}
 		}
+	public ArrayList<Users> fetchUserList(){
+		Connection con = ConnectionFactory.getConnObject();
+		String selectUserSQL = " select UserId,FirstName,LastName,EmailAddress,PhoneNumber,MailingAddress from AL_USERS";
+		try{
+			Statement stmt = con.createStatement();
+			ResultSet res=stmt.executeQuery(selectUserSQL);
+			ArrayList<Users> userList=new ArrayList<Users>();
+			while (res.next()){
+				long userId=res.getLong("UserId");
+				String firstName=res.getString("FirstName");
+				String lastName=res.getString("LastName");
+				String email=res.getString("EmailAddress");
+				int phone=res.getInt("PhoneNumber");
+				String address=res.getString("MailingAddress");
+				Users usr=new Users(firstName, lastName, email, phone, address);
+				usr.setUserId(userId);
+				userList.add(usr);
+			}
+			return userList;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public ArrayList<UserRegisterDao> fetchUserRegReport(String type){
+		Connection con = ConnectionFactory.getConnObject();
+		String selectUserSql=null;
+		if(type.equals("Month")){
+			selectUserSql = " select CONCAT(MONTHNAME(creation_date), ' ',YEAR(creation_date)) AS RegMonth,count(UserId) FROM AL_USERS "
+				+ "WHERE MONTH(creation_date)<>0 group by RegMonth";
+		}
+		else{
+			selectUserSql="select YEAR(creation_date) AS RegYear,count(UserId) from AL_USERS "
+					+ "where YEAR(creation_date)<>0 group by RegYear";
+		}
+		ArrayList<UserRegisterDao> registerList=new ArrayList<UserRegisterDao>(10);
+		try{
+			Statement stmt = con.createStatement();
+			ResultSet res=stmt.executeQuery(selectUserSql);
+			while(res.next()){
+				String userId=res.getString(1);
+				int count=res.getInt(2);
+				UserRegisterDao vrd=new UserRegisterDao(userId,count);
+				registerList.add(vrd);
+			}
+				return registerList;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+		
+}
+	public int fetchUserCount(boolean presentMonth){
+		Connection con = ConnectionFactory.getConnObject();
+		int userCount=0;
+		ResultSet res=null;
+		try{
+		if(presentMonth){
+			 Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
+		        int currentMonth = localCalendar.get(Calendar.MONTH) + 1;
+		        int currentYear = localCalendar.get(Calendar.YEAR);
+				String selectUserSql = " select count(UserId) FROM AL_USERS "
+						+ "WHERE MONTH(creation_date)=? AND YEAR(creation_date)=? ";
+				PreparedStatement stmt = con.prepareStatement(selectUserSql);
+				stmt.setInt(1, currentMonth);
+				stmt.setInt(2, currentYear);
+				res=stmt.executeQuery();      
+		}
+		else{
+			String selectUserSql = " select count(UserId) FROM AL_USERS";
+			Statement stmt = con.createStatement();
+			res=stmt.executeQuery(selectUserSql);
+		}
+			if(res.next()){
+				userCount=res.getInt(1);
+			}
+				return userCount;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return -1;
+		}
+		
+}
+	public Users getUserDetails(long userId){
+        Connection con = ConnectionFactory.getConnObject();
+        String selectPasswordSQL = " SELECT * FROM AL_USERS WHERE UserId= ?";
+
+        Users buyer = new Users();
+        try{
+            PreparedStatement stmt = con.prepareStatement(selectPasswordSQL);
+            stmt.setLong(1, userId);
+            ResultSet res=stmt.executeQuery();
+            
+            if(res.next()){
+                buyer.setFirstName(res.getString(2));
+                buyer.setLastName(res.getString(3));
+                buyer.setEmailAddress(res.getString(4));
+                buyer.setPhoneNUmber(Long.parseLong(res.getString(5)));
+                buyer.setMailingAddress(res.getString(6));
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        
+        return buyer;
+    }
 }

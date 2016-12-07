@@ -4,8 +4,14 @@ public class VendorRevenueDao {
 
 		public String payPeriod;
 		public float Profit;
-		public VendorRevenueDao(String payP, float profit){
-			this.payPeriod=payP;
+		public String vendorName;
+		public String getVendorName() {
+			return vendorName;
+		}
+		public void setVendorName(String vendorName) {
+			this.vendorName = vendorName;
+		}
+		public VendorRevenueDao(float profit){
 			this.Profit=profit;
 		}
 		public String getPayPeriod() {

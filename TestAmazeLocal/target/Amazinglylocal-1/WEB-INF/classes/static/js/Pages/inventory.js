@@ -7,7 +7,7 @@
 		         colModel: [
 		         {name: 'inventoryId', index: 'inventoryId', key: true, hidden: true},
 		         {name: 'productName', index: 'productName', width: 50, formatter:'showlink', //predefined formatter to display hyperlink
-                         formatoptions:{baseLinkUrl:'AddProduct.html'}},
+                         formatoptions:{baseLinkUrl:'edit'}},
 		         {name: 'description', index: 'description', width: 80, hidden: true},
 		         {name: 'price', index: 'price', width: 20, sorttype: "float"},
 		         {name: 'quantity', index: 'quantity', width: 25, sorttype: "int"},

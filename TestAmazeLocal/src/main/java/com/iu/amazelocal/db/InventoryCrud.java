@@ -8,8 +8,12 @@ import com.iu.amazelocal.config.ConnectionFactory;
 import com.iu.amazelocal.models.Inventory;
 import com.iu.amazelocal.models.InventoryGrid;
 import com.iu.amazelocal.models.InventoryMini;
+import com.iu.amazelocal.models.ProductSaleDao;
 import com.iu.amazelocal.models.ProductSubTypes;
 import com.iu.amazelocal.models.ProductType;
+import com.iu.amazelocal.models.ProductTypeDao;
+import com.iu.amazelocal.models.SaleApprovalGrid;
+import com.iu.amazelocal.models.VendorRevenueDao;
 import com.iu.amazelocal.utils.AppConstants;
 
 
@@ -335,17 +339,30 @@ public class InventoryCrud {
 	
 	public ArrayList<InventoryMini> listProductsByType(String type){
 		try{
-		Connection con = ConnectionFactory.getConnObject();
+			Connection con = ConnectionFactory.getConnObject();
+			ResultSet res=null;
 		// here sonoo is database name, root is username and password
-		String selectTypeSQL = "  SELECT i.inventoryid,i.productname,i.imagename, i.productrating,v.vendorname FROM"
-				+ "   AL_PRODUCTSUBTYPE st, AL_INVENTORY i, AL_VENDORS v WHERE st.productsubid = i.productsubid"
-				+ " AND v.vendorid=i.vendorid" 
-				+ " AND  st.prodsubtypename = ? "; 
-		PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
+		if(type.equals("All")){
+			String selectTypeSQL = "  SELECT i.inventoryid,i.productname,i.imagename, i.productrating,v.vendorname FROM"
+					+ "   AL_PRODUCTSUBTYPE st, AL_INVENTORY i, AL_VENDORS v WHERE st.productsubid = i.productsubid"
+					+ " AND v.vendorid=i.vendorid";
+			Statement stmt = con.createStatement();
+			res=stmt.executeQuery(selectTypeSQL);
+
+		}
+		else{
+			String selectTypeSQL = "  SELECT i.inventoryid,i.productname,i.imagename, i.productrating,v.vendorname FROM"
+					+ "   AL_PRODUCTSUBTYPE st, AL_INVENTORY i, AL_VENDORS v WHERE st.productsubid = i.productsubid"
+					+ " AND v.vendorid=i.vendorid" 
+					+ " AND  st.prodsubtypename = ? "; 
+			PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
+			stmt.setString(1, type);
+			res=stmt.executeQuery();
+
+		}
+		
 	
-		stmt.setString(1, type);
 		System.out.println("Type is"+type);
-		ResultSet res=stmt.executeQuery();
 		ArrayList<InventoryMini> inventoryList=new ArrayList<InventoryMini>();
 		while (res.next()){
 			long invId=res.getLong("InventoryId");
@@ -364,4 +381,138 @@ public class InventoryCrud {
 			return null;
 		}
 	}
+	
+	public ArrayList<SaleApprovalGrid> fetchApprovalList(){
+		try{
+		Connection con = ConnectionFactory.getConnObject();
+		// here sonoo is database name, root is username and password
+		String selectTypeSQL = "select i.InventoryId,v.VendorName,s.ProdSubTypeName,i.ProductName, i.Price,i.Sale "
+				+ "from AL_INVENTORY i,AL_VENDORS v, AL_PRODUCTSUBTYPE s "
+				+ "WHERE i.vendorid=v.vendorid AND i.ProductSubId=s.ProductSubId  "
+				+ "AND i.SaleApproved IS null";
+
+		Statement stmt = con.createStatement();
+	
+		ResultSet res=stmt.executeQuery(selectTypeSQL);
+		ArrayList<SaleApprovalGrid> inventoryList=new ArrayList<SaleApprovalGrid>();
+		while (res.next()){
+			int invId=res.getInt("InventoryId");
+			String vendName=res.getString("VendorName");
+			String prodSubTypeName=res.getString("ProdSubTypeName");
+			String prodName=res.getString("ProductName");
+			float price=res.getFloat("Price");
+			float sale=res.getFloat("Sale");
+			SaleApprovalGrid sg=new SaleApprovalGrid(invId,vendName,prodSubTypeName,prodName,price,sale);
+			inventoryList.add(sg);
+		}
+		System.out.println("Inventory size is"+inventoryList.size());
+		return inventoryList;
+		}
+		catch(SQLException e){
+			System.out.println(e);
+			return null;
+		}
+	}
+	public void approveSales(int[] inventory){
+		try{
+			Connection con = ConnectionFactory.getConnObject();
+			int invLength=inventory.length;
+			StringBuffer params=new StringBuffer("UPDATE AL_INVENTORY set SaleApproved='Y' WHERE InventoryId IN ( ");
+			for(int i=0;i<invLength-1;i++){
+				params.append("?,");
+			}
+			params.append("?");
+			String selectTypeSQL = params.append(" )").toString();
+
+			PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
+			for(int i=0;i<invLength;i++){
+				stmt.setInt(i+1, inventory[i]);
+			}
+			stmt.executeUpdate();
+			
+			System.out.println("Updated");
+			}
+			catch(SQLException e){
+				System.out.println(e);
+			}
+	}
+	public ArrayList<ProductTypeDao> fetchProductTypeQuantity(){
+		Connection con = ConnectionFactory.getConnObject();
+		String selectProductSql = "select pt.TypeName,count(st.ProductSubId) "
+				+ " from AL_INVENTORY i, AL_PRODUCTSUBTYPE st, AL_PRODUCT_TYPE pt "
+				+ "WHERE i.ProductSubId=st.ProductSubId AND st.ProductTypeId=pt.ProductTypeId GROUP BY TypeName";
+
+		ArrayList<ProductTypeDao> productTypeList=new ArrayList<ProductTypeDao>(10);
+		try{
+			Statement stmt = con.createStatement();
+			ResultSet res=stmt.executeQuery(selectProductSql);
+			while(res.next()){
+				String productType=res.getString(1);
+				long quantity=res.getLong(2);
+				ProductTypeDao vrd=new ProductTypeDao(productType,quantity);
+				productTypeList.add(vrd);
+			}
+				return productTypeList;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public ArrayList<ProductSaleDao> fetchProductUnitSold(int vendorId){
+		try{
+		Connection con = ConnectionFactory.getConnObject();
+		// here sonoo is database name, root is username and password
+		String selectTypeSQL = "select st.ProdSubTypeName, SUM(UnitSold) from AL_INVENTORY i,AL_PRODUCTSUBTYPE st "
+				+ "where i.VendorId=? AND i.ProductSubId=st.ProductSubId group by ProdSubTypeName";
+
+		PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
+		stmt.setInt(1,vendorId);
+		ResultSet res=stmt.executeQuery();
+		ArrayList<ProductSaleDao> soldList=new ArrayList<ProductSaleDao>();
+		while (res.next()){
+			String prodSubTypeName=res.getString("ProdSubTypeName");
+			int sumUnits=res.getInt(2);
+			
+			ProductSaleDao sg=new ProductSaleDao(prodSubTypeName,sumUnits);
+			soldList.add(sg);
+		}
+		System.out.println("Inventory size is"+soldList.size());
+		return soldList;
+		}
+		catch(SQLException e){
+			System.out.println(e);
+			return null;
+		}
+	}
+	public boolean updateProduct(Inventory i) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = ConnectionFactory.getConnObject();
+            String insertProdSQL = "UPDATE AL_INVENTORY SET ProductSubId = ?,"
+            +" ProductName = ?, Description = ?, Quantity = ?, Price = ?, Unit = ?, Calories = ?, " 
+            +" Sale = ?, ImageName = ? WHERE InventoryId = ? AND VendorId = ?";
+            
+            System.out.println("Inv Id in db.java "+ i.getInventoryId());
+            PreparedStatement stmt = con.prepareStatement(insertProdSQL);
+            stmt.setLong(1, i.getProductSubId());
+            stmt.setString(2, i.getProductName());
+            stmt.setString(3, i.getDescription());
+            stmt.setInt(4, i.getQuantity());
+            stmt.setFloat(5, i.getPrice());
+            stmt.setString(6, i.getUnit());
+            stmt.setFloat(7, i.getCalories());
+            stmt.setFloat(8, i.getSale());
+            stmt.setString(9, i.getImageName());
+            stmt.setLong(10, i.getInventoryId());
+            stmt.setLong(11, i.getVendorId());
+            stmt.executeUpdate();
+            con.close();
+            System.out.println("Update successful");
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
 }

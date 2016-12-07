@@ -30,6 +30,8 @@ public class Vendors {
 		
 		@Column(nullable = false)
 		  private String MailingAddress;
+		
+		private float revenue;
 	 
 private float vendorRating;
 	  public float getVendorRating() {
@@ -102,5 +104,13 @@ public void setVendorRating(float vendorRating) {
 	    this.FarmAddress=FarmAddress;
 
 	  }
+
+	public float getRevenue() {
+		return revenue;
+	}
+
+	public void setRevenue(float revenue) {
+		this.revenue = revenue;
+	}
 
 }

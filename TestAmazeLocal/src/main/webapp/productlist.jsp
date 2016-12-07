@@ -207,7 +207,7 @@
 
             </div>
             <!--/.nav-collapse -->
-
+<!-- COPY FOR SEARCH BAR FROM HERE -->
             <div class="navbar-buttons">
 
                 <div class="navbar-collapse collapse right" id="basket-overview">
@@ -227,7 +227,7 @@
             <div class="clearfix collapse in" id="search">
 
                 <form class="navbar-form" role="search" action="search" method="post">
-                    <div class="input-group">
+                    <div class="row">
                     <select name="criteria" id="criteria" class="form-control">
    								<option value="All" selected="selected">All Departments</option>
 								<option value="VEGETABLES" selected="selected">Vegetables</option>
@@ -238,7 +238,7 @@
 								
 							</select>
                         <input type="text" class="form-control" placeholder="Search"  name="searchStr" id="searchStr">
-                        <span class="input-group-btn">
+                        <span>
 
 			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
 
@@ -247,6 +247,8 @@
                 </form>
 
             </div>
+            <!-- COPY FOR SEARCH BAR TILL HERE -->
+            
             <!--/.nav-collapse -->
 
         </div>
@@ -408,7 +410,7 @@
         <div id="copyright">
             <div class="container">
                 <div class="col-md-6">
-                    <p class="pull-left">Â© 2015 al</p>
+                    <p class="pull-left">© 2015 al</p>
 
                 </div>
                 <div class="col-md-6">

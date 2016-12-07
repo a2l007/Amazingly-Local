@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<%@page import="com.iu.amazelocal.db.ProductTypeCrud"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.ArrayList"%>
 <html lang="en">
 
 <head>
@@ -52,14 +56,21 @@
             </div>
             <div class="col-md-6" data-animate="fadeInDown">
                 <ul class="menu">
-                    <li><a href="loginlanding.html" >Login</a>
+                 	<% if(session.getAttribute("sessionExists")!=null) {%>
+                 	
+                 	 <li> Welcome <%=session.getAttribute("userName")%><form action="logout" method="get">
+                    <input type="submit" value="Logout"></form> </li>
+                 	<%}
+						else { %>
+                    <li ><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
                     </li>
-                    <li><a href="register.html">Register</a>
+                    <li ><a href="register.html">Register</a>
                     </li>
-                    <li><a href="contact.html">Contact</a>
+                    <li ><a href="contact.html">Contact</a>
                     </li>
-                    <li><a href="#">Recently viewed</a>
-                    </li>
+                    <% }  %>
+                    
+                   
                 </ul>
             </div>
         </div>

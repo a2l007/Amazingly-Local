@@ -6,11 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import com.iu.amazelocal.config.ConnectionFactory;
 import com.iu.amazelocal.models.ProductSaleDao;
 import com.iu.amazelocal.models.ProductUser;
+import com.iu.amazelocal.models.Users;
 import com.iu.amazelocal.models.VendorRevenueDao;
+import com.iu.amazelocal.models.Vendors;
 
 public class VendorCrud {
 	
@@ -23,9 +27,89 @@ public class VendorCrud {
 			Statement stmt = con.createStatement();
 			ResultSet res=stmt.executeQuery(selectVendorSql);
 			while(res.next()){
-				String vendId=res.getString(1);
+				String payPeriod=res.getString(1);
 				float revenue=res.getFloat(2);
-				VendorRevenueDao vrd=new VendorRevenueDao(vendId,revenue);
+				VendorRevenueDao vrd=new VendorRevenueDao(revenue);
+				vrd.setPayPeriod(payPeriod);
+				revenueList.add(vrd);
+			}
+				return revenueList;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+		
+}
+	public ArrayList<VendorRevenueDao> fetchAllVendorRevenueReport(boolean presentMonth){
+		Connection con = ConnectionFactory.getConnObject();
+		ResultSet res=null;
+		ArrayList<VendorRevenueDao> revenueList=new ArrayList<VendorRevenueDao>(10);
+
+		try{
+		if(presentMonth){
+			 Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
+		        int currentMonth = localCalendar.get(Calendar.MONTH) + 1;
+		        int currentYear = localCalendar.get(Calendar.YEAR);
+				String selectUserSql = " select v.VendorName,sum(Profit) from AL_VENDOR_REVENUE vr,AL_VENDORS v "
+						+ "WHERE v.vendorId=vr.vendorId AND MONTH(vr.PayMonth)= ? "
+						+ "AND YEAR(vr.PayMonth)= ? group by vr.VendorId";
+				PreparedStatement stmt = con.prepareStatement(selectUserSql);
+				stmt.setInt(1, currentMonth);
+				stmt.setInt(2, currentYear);
+				res=stmt.executeQuery();      
+		}
+		else{
+			String selectUserSql = "select v.VendorName,sum(Profit) "
+					+ "from AL_VENDOR_REVENUE vr,AL_VENDORS v WHERE v.vendorId=vr.vendorId group by vr.VendorId";
+			Statement stmt = con.createStatement();
+			res=stmt.executeQuery(selectUserSql);
+		}
+		
+			while(res.next()){
+				String vendorName=res.getString(1);
+				float revenue=res.getFloat(2);
+				VendorRevenueDao vrd=new VendorRevenueDao(revenue);
+				vrd.setVendorName(vendorName);
+				revenueList.add(vrd);
+			}
+				return revenueList;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+		
+}
+	public ArrayList<VendorRevenueDao> fetchRevenueReportById(String type){
+		Connection con = ConnectionFactory.getConnObject();
+		ResultSet res=null;
+		ArrayList<VendorRevenueDao> revenueList=new ArrayList<VendorRevenueDao>(10);
+
+		try{
+		if(type.equals("Month")){
+			 Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
+		        int currentMonth = localCalendar.get(Calendar.MONTH) + 1;
+		        int currentYear = localCalendar.get(Calendar.YEAR);
+				String selectUserSql = "select concat(MONTHNAME(PayMonth),' ',YEAR(PayMonth)), SUM(Profit) "
+						+ "from AL_VENDOR_REVENUE where vendorid=? group by MONTH(PayMonth);";
+				PreparedStatement stmt = con.prepareStatement(selectUserSql);
+				stmt.setInt(1, 3);
+				res=stmt.executeQuery();      
+		}
+		else{
+			String selectUserSql = "select YEAR(PayMonth), SUM(Profit) "
+					+ "from AL_VENDOR_REVENUE where vendorid=? group by YEAR(PayMonth)";
+			PreparedStatement stmt = con.prepareStatement(selectUserSql);
+			stmt.setInt(1, 3);
+			res=stmt.executeQuery();      
+		}
+		
+			while(res.next()){
+				String period=res.getString(1);
+				float revenue=res.getFloat(2);
+				VendorRevenueDao vrd=new VendorRevenueDao(revenue);
+				vrd.setPayPeriod(period);
 				revenueList.add(vrd);
 			}
 				return revenueList;
@@ -80,6 +164,35 @@ public class VendorCrud {
 		}
 		
 }
+	public ArrayList<Vendors> fetchVendorList(){
+		Connection con = ConnectionFactory.getConnObject();
+		String selectVendorSQL = " select VendorId, VendorName, FarmAddress,MailingAddress,VendorRating,EmailAddress,PhoneNumber,Revenue "
+				+ "from AL_VENDORS";
+		try{
+			Statement stmt = con.createStatement();
+			ResultSet res=stmt.executeQuery(selectVendorSQL);
+			ArrayList<Vendors> vendorList=new ArrayList<Vendors>();
+			while (res.next()){
+				long vendorId=res.getLong("VendorId");
+				String vendorName=res.getString("VendorName");
+				String farmAddress=res.getString("FarmAddress");
+				String mailAddress=res.getString("MailingAddress");
+				float rating=res.getFloat("VendorRating");
+				String emailAddress=res.getString("EmailAddress");
+				long phone=res.getLong("PhoneNumber");
+				float revenue=res.getFloat("Revenue");
+				Vendors vendor=new Vendors(vendorName, emailAddress, phone, mailAddress, farmAddress);
+				vendor.setVendorId(vendorId);
+				vendor.setRevenue(revenue);
+				vendorList.add(vendor);
+			}
+			return vendorList;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
 	}
 //	public ArrayList<Integer> fetchVendorIds(String vendorName){
 //		Connection con = ConnectionFactory.getConnObject();
