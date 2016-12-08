@@ -52,19 +52,28 @@
 
     <!-- *** TOPBAR ***
  _________________________________________________________ -->
-    <div id="top">
+     <div id="top">
         <div class="container">
             <div class="col-md-6 offer" data-animate="fadeInDown">
                 <a href="#" class="btn btn-success btn-sm" data-animate-hover="shake">Offer of the day</a>  <a href="#">Get flat 35% off on orders over $50!</a>
             </div>
             <div class="col-md-6" data-animate="fadeInDown">
                 <ul class="menu">
-                    <li><a href="register.html">Register</a>
+                 	<% if(session.getAttribute("sessionExists")!=null) {%>
+                 	
+                 	 <li> Welcome <%=session.getAttribute("userName")%><form action="logout" method="get">
+                    <input type="submit" value="Logout"></form> </li>
+                 	<%}
+						else { %>
+                    <li ><a href="loginlanding.html" >Login</a>
                     </li>
-                    <li><a href="contact.html">Contact</a>
+                    <li ><a href="register.html">Register</a>
                     </li>
-                    <li><a href="#">Recently viewed</a>
+                    <li ><a href="contact.html">Contact</a>
                     </li>
+                    <% }  %>
+                    
+                   
                 </ul>
             </div>
         </div>
@@ -106,13 +115,13 @@
     <!-- *** NAVBAR ***
  _________________________________________________________ -->
 
-    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+        <div class="navbar navbar-default yamm" role="navigation" id="navbar">
         <div class="container">
             <div class="navbar-header">
 
                 <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
-                    <img src="img/al_logo.png" alt="Obaju logo" class="lg" class="hidden-xs">
-                    <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
+                    <img src="img/al_logo.png" alt="Obaju logo" class="lg">
+                    <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Amazingly Local!</span>
                 </a>
                 <div class="navbar-buttons">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
@@ -123,17 +132,8 @@
                         <span class="sr-only">Toggle search</span>
                         <i class="fa fa-search"></i>
                     </button>
-                    <a class="btn btn-default navbar-toggle" href="cart.jsp">
-                    
-                    <%  ShopCartCrud cart = new ShopCartCrud();
-                                   ArrayList<ShopCart> cartItems = new ArrayList<ShopCart>();
-                                   ShopCart orderDetails = new ShopCart();
-                                   Long uId = (Long)session.getAttribute("userId");
-                                   orderDetails = cart.fetchOrderDetails(uId);
-                                   int OrderQuantity = 0;
-                                   if(orderDetails != null){
-                                   OrderQuantity = orderDetails.getOrderQuantity();}%>
-                        <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs"><%=OrderQuantity %> items in cart</span>
+                    <a class="btn btn-default navbar-toggle" href="basket.html">
+                        <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs">3 items in cart</span>
                     </a>
                 </div>
             </div>
@@ -144,8 +144,7 @@
                 <ul class="nav navbar-nav navbar-left">
                     <li class="active"><a href="index.html">Home</a>
                     </li>
-                   
-<li class="dropdown yamm-fw">
+                    <li class="dropdown yamm-fw">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Shop <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
@@ -172,25 +171,111 @@
                             </li>
                         </ul>
                     </li>
-
-					<li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe </b></a>                       
-					</li>
+                     <li class="dropdown yamm-fw">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Recipes <b class="caret"></b></a>
+                        <ul class="dropdown-menu" >
+                            <li>
+                                <div class="yamm-content">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <ul>
+                                                <li><a href="ViewRecipes.html">View Recipes</a>
+                                                </li>
+											<% if(session.getAttribute("userType")!=null){
+													if(session.getAttribute("userType").equals("V")) { %>
+                                                <li><a href="AddRecipe.html">Add Recipes</a>
+                                                </li>
+                                                <% } } %>
+                                                </ul>
+                                                </div>
+                                                </div>
+                                                </div>
+                                                </li>
+                                                </ul>
+                                                </li>
+                 <% if(session.getAttribute("userType")!=null) {
+                		if((Boolean)session.getAttribute("sessionExists")) { %>             
+                <li class="dropdown yamm-fw">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> 
+                       <% if(session.getAttribute("userType").equals("V")) { %>
+                        Vendor
+                        <% } else if(session.getAttribute("userType").equals("A")){  %>
+						Admin
+						<% } else { %>
+                        User
+                        <% } %> 
+                        <b class="caret"></b></a>
+                        <ul class="dropdown-menu" >
+                            <li>
+                                <div class="yamm-content">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <ul>
+                                            <% if(session.getAttribute("userType").equals("V")) { %>
+                                            <li><a href="AddProduct.jsp">Add Product</a>
+                                                </li>
+                                             <li><a href="Inventory.jsp">View Inventory</a>
+                                                </li>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+                                             <% }
+												else if(session.getAttribute("userType").equals("C")){ %>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% }
+												else if(session.getAttribute("userType").equals("A")){ %>
+												<li><a href="Inventory.jsp">View Inventory</a>
+                                                </li>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="vendorreport.jsp">Vendor Sales Report</a>
+                                                </li>
+                                                <li><a href="vendorstats.jsp">Vendor Revenue Report</a>
+                                                </li>
+                                                <li><a href="viewvendorlist.jsp">View List of Vendors</a>
+                                                </li>
+                                                <li><a href="viewuserlist.jsp">View List of Buyer</a>
+                                                </li>
+                                                <li><a href="userreport.jsp">View Buyer Report</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% } %>
+                                                </ul>
+                                                </div>
+                                                </div>
+                                                </div>
+                                                </li>
+                                                </ul>
+                                                </li>
+                                                <% } } %>
+                 <!-- <li th:unless="${session.sessionExists} == true"><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
+                    </li>
+						<li th:case="V"> 
+						<a href="AddRecipe.html" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe 
+						</a></li>
+						<li th:case="C"> 
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe 
+						</a></li>
 
                     <li >
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Farmers </b></a>
                        
-                    </li>
+                    </li> -->
                 </ul>
 
             </div>
             <!--/.nav-collapse -->
 
-            <!-- COPY FOR SEARCH BAR FROM HERE -->
+           <!-- COPY FOR SEARCH BAR FROM HERE -->
             <div class="navbar-buttons">
 
                 <div class="navbar-collapse collapse right" id="basket-overview">
-                    <a href="basket.html" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"><%=OrderQuantity %> items in cart</span></a>
+                    <a href="basket.html" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">3 items in cart</span></a>
                 </div>
                 <!--/.nav-collapse -->
 
@@ -263,14 +348,14 @@
                                 <div class="flip-container">
                                     <div class="flipper">
                                         <div class="front">
-                                            <a href="RecipeDetail.html">
+                                            <a href="viewproduct?inventoryId=<%=item.getInventoryId()%>">
                                                 <img src="<%=item.getImageName()%>" alt="" class="img-responsive">
              <!--<img src="/home/atul/workspace/TestAmazeLocal/src/main/resources/static/images/feta.jpg" alt="" class="img-responsive">-->
                                
                                             </a>
                                         </div>
                                         <div class="back">
-                                            <a href="RecipeDetail.html">
+                                            <a href="viewproduct?inventoryId=<%=item.getInventoryId()%>">
                                                 <img src="<%=item.getImageName()%>" alt="" class="img-responsive">
                                             </a>
                                         </div>
@@ -280,9 +365,9 @@
                                     <img src="img/product1.jpg" alt="" class="img-responsive">
                                 </a>
                                 <div class="text">
-                                    <h3><a href="RecipeDetail.html"><%=item.getProductName() %></a></h3>
+                                    <h3><a href="viewproduct?inventoryId=<%=item.getInventoryId()%>"><%=item.getProductName() %></a></h3>
                                     <p class="buttons">
-                                        <a href="RecipeDetail.html" class="btn btn-default">View detail</a>
+                                        <a href="viewproduct?inventoryId=<%=item.getInventoryId()%>" class="btn btn-default">View detail</a>
                                     </p>
                                 </div>
                                 <!-- /.text -->

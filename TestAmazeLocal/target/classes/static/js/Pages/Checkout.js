@@ -56,14 +56,14 @@ function SaveAddress(){
 	
 	//Save address only if data is valid
 	if(isValid){
-		alert("isValid"+isValid);
+	//	alert("isValid"+isValid);
 	$.ajax({  
          url: "saveAddress",  
          type: "POST",    
          data: address,
          contentType: "application/json; charset=utf-8",
          success: function (data) { 
-        	 alert("Hello successWW");
+        //	 alert("Hello successWW");
          },  
          error: function () {  
             alert("Error while processing your request");  

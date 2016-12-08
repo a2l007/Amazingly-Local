@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.iu.amazelocal.db.InventoryCrud;
 import com.iu.amazelocal.db.PasswordAuth;
 import com.iu.amazelocal.db.PaymentCrud;
+import com.iu.amazelocal.db.RatingCrud;
 import com.iu.amazelocal.db.RecipeCrud;
 import com.iu.amazelocal.db.RecipeDetailCrud;
 import com.iu.amazelocal.db.ShopCartCrud;
@@ -39,6 +40,7 @@ import com.iu.amazelocal.models.LoginDao;
 import com.iu.amazelocal.models.Payment;
 import com.iu.amazelocal.models.ProductSubTypes;
 import com.iu.amazelocal.models.ProductType;
+import com.iu.amazelocal.models.Rating;
 import com.iu.amazelocal.models.Recipe;
 import com.iu.amazelocal.models.SaleApprovalGrid;
 import com.iu.amazelocal.models.SaleGridData;
@@ -272,7 +274,7 @@ public class TestController {
 		 String products = null;
 	    try {
 	    	 InventoryCrud inventory=new InventoryCrud();
-	    	 int vendorId=(int)httpSession.getAttribute(userId);
+	    	 long vendorId=(long)httpSession.getAttribute(userId);
 	    	 inventories = inventory.fetchInventories(vendorId);
 	    	 int totalPages = (int) Math.floor((inventories.size()/rows)+1);
 	    	 JqGridData gridData = new JqGridData(totalPages, page,inventories.size(),inventories);
@@ -404,7 +406,47 @@ public class TestController {
              httpSession.setAttribute("Rec", rec);
         return "viewrecipe";
 }
-	 
+	 @RequestMapping(method = RequestMethod.GET, value = "/cart")
+     public String AddToCart(@RequestParam(value = "inventoryId", required=false) int invId, HttpServletRequest request) {
+		 try {
+		 System.out.println("inside add to cart");
+             //long inventoryId = Long.parseLong(request.getParameter("inventoryId"));
+             System.out.println("inside add to cart inventory id" + invId);
+             ShopCart cart = new ShopCart();
+             cart.setInventoryId(invId);
+             cart.setUserId((Long)httpSession.getAttribute(userId));
+             ShopCartCrud order =new ShopCartCrud();
+             order.insertOrder(cart);
+             }
+	       catch(Exception ex){
+	           System.out.println("Error"+ex.getMessage());
+	           ex.printStackTrace();
+	           return ex.getMessage();   
+	       }
+		 
+        return "cart";
+}
+	 @RequestMapping(method = RequestMethod.GET, value = "/orderdetails")
+     public String fetchOrderCartItems(@RequestParam(value = "orderId", required=false) int ordId, HttpServletRequest request) {
+		 try {
+		// System.out.println("inside add to cart");
+             //long inventoryId = Long.parseLong(request.getParameter("inventoryId"));
+             //System.out.println("inside add to cart inventory id" + invId);
+             ShopCart cart = new ShopCart();
+             ArrayList<ShopCart> cartItems = new ArrayList<ShopCart>();
+             cart.setOrderId(ordId);
+             cart.setUserId((Long)httpSession.getAttribute(userId));
+             ShopCartCrud order =new ShopCartCrud();
+             cartItems = order.fetchOrderCart(cart);
+             }
+	       catch(Exception ex){
+	           System.out.println("Error"+ex.getMessage());
+	           ex.printStackTrace();
+	           return ex.getMessage();   
+	       }
+		 
+        return "cart";
+}
 	 @RequestMapping(method = RequestMethod.GET, value = "/getSaleApprovals")
      @ResponseBody        
      public String getAllSaleApprovals(
@@ -737,4 +779,42 @@ public class TestController {
            return ex.getMessage();   
        }
     }
+	 @RequestMapping(method = RequestMethod.GET, value = "/rating")
+     public String directrating(
+             HttpServletRequest request) {
+             long inventoryId = Long.parseLong(request.getParameter("inventoryId"));    
+             System.out.println("inventoryiD"+inventoryId);
+             httpSession.setAttribute("id", inventoryId);
+        return "rating";
+     }
+	 
+	@RequestMapping(method = RequestMethod.POST, value = "/rate")
+	    public String addrating(long inventoryId, long rating, String comment) throws IOException {
+		int UserId=(Integer)httpSession.getAttribute(userId);
+		//System.out.println("inventory is id"+UserId);
+	       	 Rating rat=new Rating(inventoryId,UserId,rating,comment);
+	       	 RatingCrud rC=new RatingCrud();
+	       	 rC.insertRating(rat);
+	    	 return "rating";
+	     }
+	 
+	 
+	 @RequestMapping(method = RequestMethod.GET, value = "/viewproduct")
+     public String viewproduct(HttpServletRequest request) {
+             int inventoryId = Integer.parseInt(request.getParameter("inventoryId"));
+             System.out.println("Inventoryid"+inventoryId);
+             Inventory item = new Inventory();
+             InventoryCrud prod=new InventoryCrud();
+             item = prod.fetchInventoryDetails(inventoryId);
+             System.out.println("Item"+item);
+             httpSession.setAttribute("inventoryId", item);
+             ArrayList<Rating> ratlist=new ArrayList<Rating>();
+             Rating rat=new Rating();
+             RatingCrud ratings=new RatingCrud();
+             ratlist=ratings.displayRating(inventoryId);
+             System.out.println(rat.getRating());
+             httpSession.setAttribute("ratings",ratlist);
+        return "viewproduct";
+	 }
+	 
 }

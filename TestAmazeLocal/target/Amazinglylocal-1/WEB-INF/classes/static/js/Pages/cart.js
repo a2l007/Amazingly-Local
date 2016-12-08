@@ -22,7 +22,8 @@ function updateCart(){
          contentType: "application/json; charset=utf-8",
          success: function (data) { 
         	 alert("Hello successWW");
-        	 alert(data);
+
+        	 window.location.href = "OrderReview.jsp";
          },  
          error: function () {  
             alert("Error while processing your request");  

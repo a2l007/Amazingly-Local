@@ -277,18 +277,18 @@
  							 <% Long inventoryId = (Long)session.getAttribute("id");	%>
                             <form action="rate" method="post" id="rateform">
  							   <br />
-    							<p>1  <input type="radio" name="rating" value="1" /> Worse</p>
+    							<p>1  <input type="radio" name="rating" value="1" /> Worst</p>
     							<br />
     							<p>2  <input type="radio" name="rating" value="2" /> Bad</p>
     							<br />
-    							<p>3  <input type="radio" name="rating" value="3" /> Not bad</p>
+    							<p>3  <input type="radio" name="rating" value="3" /> Average</p>
     							<br />
     							<p>4  <input type="radio" name="rating" value="4" /> Good</p>
     							<br />
-    							<p>5  <input type="radio" name="rating" value="5" /> Excellent<%=inventoryId %></p>
+    							<p>5  <input type="radio" name="rating" value="5" /> Excellent</p>
     							<input type="hidden" name="inventoryId" value="<%=inventoryId %>" /> 
     							<br /><br />
-    							<input type="submit" />
+    							<input type="submit" name="Rate Product" />
 							</form>
 							<br /><br />
 							<textarea rows="4" cols="50" name="comment" form="rateform">Add your comments here...</textarea>

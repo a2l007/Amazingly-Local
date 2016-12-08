@@ -119,7 +119,7 @@ public class InventoryCrud {
 	}
 	
 	
-	public ArrayList<InventoryGrid> fetchInventories(int vendorId){
+	public ArrayList<InventoryGrid> fetchInventories(long vendorId){
 		Connection con = ConnectionFactory.getConnObject();
 		String selectProductsSQL = "SELECT INV.InventoryId, PTYPE.ProductTypeId, PTYPE.TypeName," 
 		+" INV.ProductSubId, PSUBTYPE.ProdSubTypeName,INV.ProductName, INV.Description, INV.Quantity,"
@@ -130,7 +130,7 @@ public class InventoryCrud {
 		ArrayList<InventoryGrid> inventories = new ArrayList<InventoryGrid>();
 		try{
 			PreparedStatement stmt = con.prepareStatement(selectProductsSQL);
-			stmt.setInt(1, vendorId);
+			stmt.setLong(1, vendorId);
 			ResultSet res=stmt.executeQuery();
 			while(res.next()){
 				InventoryGrid prod = new InventoryGrid();
@@ -181,19 +181,19 @@ public class InventoryCrud {
 	
 	public Inventory fetchInventoryDetails(int inventoryId){
 		Connection con = ConnectionFactory.getConnObject();
-		String selectProductsSQL = "SELECT INV.InventoryId, PTYPE.ProductTypeId, PTYPE.TypeName," 
+		String selectProductsSQL = "SELECT INV.InventoryId, INV.ImageName, PTYPE.ProductTypeId, PTYPE.TypeName," 
 		+" INV.ProductSubId, PSUBTYPE.ProdSubTypeName,INV.ProductName, INV.Description, INV.Quantity,"
 		+" INV.Price, INV.Unit, INV.Calories, INV.Sale, INV.ProductRating, SaleApproved "
 		+" FROM AL_INVENTORY INV LEFT JOIN AL_PRODUCTSUBTYPE PSUBTYPE ON INV.ProductSubId = PSUBTYPE.ProductSubId "
-		+" LEFT JOIN AL_PRODUCT_TYPE PTYPE ON PTYPE.ProductTypeId = PSUBTYPE.ProductTypeId WHERE VendorId = 2 "
-		+ "AND INV.InventoryId = " + inventoryId;
-		
+		+" LEFT JOIN AL_PRODUCT_TYPE PTYPE ON PTYPE.ProductTypeId = PSUBTYPE.ProductTypeId WHERE INV.InventoryId = "
+		+ inventoryId;
+		System.out.print("fetch inv"+ inventoryId);
 		Inventory prod = new Inventory();
 		try{
-			PreparedStatement stmt = con.prepareStatement(selectProductsSQL);
-			ResultSet res=stmt.executeQuery();
+			Statement stmt = con.createStatement();
+			ResultSet res=stmt.executeQuery(selectProductsSQL);
 			
-			while(res.next()){
+			if(res.next()){
 				prod.setInventoryId(Long.parseLong(res.getString("InventoryId")));
 				prod.setProductTypeId(Long.parseLong(res.getString("ProductTypeId")));
 				prod.setProductType(res.getString("TypeName"));
@@ -205,11 +205,11 @@ public class InventoryCrud {
 				prod.setPrice(Float.parseFloat(res.getString("Price")));
 				prod.setUnit(res.getString("Unit"));
 				prod.setCalories(Float.parseFloat(res.getString("Calories")));
-				
+				prod.setImageName(res.getString("ImageName"));
 				if(res.getString("Sale") != null){
 					prod.setSale(Float.parseFloat(res.getString("Sale")));
 				}
-				
+				System.out.print("res.getString:" + res.getString("Price"));
 				if(res.getString("ProductRating") != null){
 					prod.setProductRating(Float.parseFloat(res.getString("ProductRating")));
 				}
@@ -228,6 +228,7 @@ public class InventoryCrud {
 				System.out.println("saleStatus"+saleStatus);
 				prod.setSaleApproved(saleStatus);
 			}
+			System.out.println("Price of inv: "+ prod.getPrice());
 		return prod;
 
 		}

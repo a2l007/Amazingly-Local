@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.*"%>
+<%@page import="com.iu.amazelocal.models.Inventory"%>
+<%@page import="com.iu.amazelocal.models.Rating"%>
+<%@page import="com.iu.amazelocal.db.ProductTypeCrud"%>
 <html lang="en">
 
 <head>
@@ -25,6 +32,7 @@
     <link href="css/animate.min.css" rel="stylesheet">
     <link href="css/owl.carousel.css" rel="stylesheet">
     <link href="css/owl.theme.css" rel="stylesheet">
+    <link href="css/img-size.css" rel="stylesheet">
 
     <!-- theme stylesheet -->
     <link href="css/style.default.css" rel="stylesheet" id="theme-stylesheet">
@@ -35,32 +43,39 @@
     <script src="js/respond.min.js"></script>
 
     <link rel="shortcut icon" href="favicon.png">
-    
-    <%@page import="com.iu.amazelocal.models.ShopCart"%>
+
+	<%@page import="com.iu.amazelocal.models.ShopCart"%>
 	<%@page import="com.iu.amazelocal.db.ShopCartCrud"%>
 	<%@page import="java.util.ArrayList"%>
-
 
 </head>
 
 <body>
+
     <!-- *** TOPBAR ***
  _________________________________________________________ -->
-    <div id="top">
+     <div id="top">
         <div class="container">
             <div class="col-md-6 offer" data-animate="fadeInDown">
                 <a href="#" class="btn btn-success btn-sm" data-animate-hover="shake">Offer of the day</a>  <a href="#">Get flat 35% off on orders over $50!</a>
             </div>
             <div class="col-md-6" data-animate="fadeInDown">
                 <ul class="menu">
-                    <li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
+                 	<% if(session.getAttribute("sessionExists")!=null) {%>
+                 	
+                 	 <li> Welcome <%=session.getAttribute("userName")%><form action="logout" method="get">
+                    <input type="submit" value="Logout"></form> </li>
+                 	<%}
+						else { %>
+                    <li ><a href="loginlanding.html" >Login</a>
                     </li>
-                    <li><a href="register.html">Register</a>
+                    <li ><a href="register.html">Register</a>
                     </li>
-                    <li><a href="contact.html">Contact</a>
+                    <li ><a href="contact.html">Contact</a>
                     </li>
-                    <li><a href="#">Recently viewed</a>
-                    </li>
+                    <% }  %>
+                    
+                   
                 </ul>
             </div>
         </div>
@@ -74,24 +89,13 @@
                     </div>
                     <div class="modal-body">
                         <form action="customer-orders.html" method="post">
-                        <div class="form-group">
-                                <input type="text" class="form-control" id="fname-modal" placeholder="First Name">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="lname-modal" placeholder="Last Name">
-                            </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="email-modal" placeholder="email">
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" id="password-modal" placeholder="password">
                             </div>
-							<div class="form-group">
-                                <input type="text" class="form-control" id="phone-modal" placeholder="Phone Number">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="address-modal" placeholder="Mailing Address">
-                            </div>
+
                             <p class="text-center">
                                 <button class="btn btn-primary"><i class="fa fa-sign-in"></i> Log in</button>
                             </p>
@@ -119,7 +123,7 @@
 
                 <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
                     <img src="img/al_logo.png" alt="Obaju logo" class="lg" class="hidden-xs">
-                    <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
+                    <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Amazingly Local!</span>
                 </a>
                 <div class="navbar-buttons">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
@@ -155,76 +159,123 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <div class="yamm-content">
+                                <% ProductTypeCrud menuType=new ProductTypeCrud();
+                                	HashMap<String,ArrayList<String>> map = menuType.fetchProductTypeMap();
+                                for (Map.Entry<String, ArrayList<String>> entry : map.entrySet()) {
+                                	String productType=entry.getKey();
+                                	ArrayList<String> productSubTypeList=entry.getValue();%>
                                     <div class="row">
                                         <div class="col-sm-3">
-                                            <h5>Vegetables</h5>
-                                            <ul>
-                                                <li><a href="category.html">Tomato</a>
+                                            <h5><%=productType %></h5>
+											  <ul>
+                                            <% for(String productSubType:productSubTypeList){ %>
+                                                <li><a href="category?subtype=<%=productSubType%>"><%=productSubType %> </a>
                                                 </li>
-                                                <li><a href="category.html">Potato</a>
-                                                </li>
-                                                <li><a href="category.html">Onion</a>
-                                                </li>
-                                                <li><a href="category.html">Broccoli</a>
-                                                </li>
-                                                <li><a href="category.html">Egg Plant</a>
-                                                </li>
-                                                <li><a href="category.html">Broccoli</a>
-                                                </li>
+                                               <%} %>
                                             </ul>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <h5>Fruits</h5>
-                                            <ul>
-                                                <li><a href="category.html">Apple</a>
-                                                </li>
-                                                <li><a href="category.html">Citrus fruits</a>
-                                                </li>
-                                                <li><a href="category.html">Banana</a>
-                                                </li>
-                                                <li><a href="category.html">Melon</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <h5>Meat</h5>
-                                            <ul>
-                                                <li><a href="category.html">Beef</a>
-                                                </li>
-                                                <li><a href="category.html">Chicken</a>
-                                                </li>
-                                                <li><a href="category.html">Pork</a>
-                                                </li>
-                                                <li><a href="category.html">Turkey</a>
-                                                </li>                                  
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <h5>Dairy Products</h5>
-                                            <ul>
-                                                <li><a href="category.html">Milk</a>
-                                                </li>
-                                                <li><a href="category.html">Butter</a>
-                                                </li>
-                                                <li><a href="category.html">Cheese</a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <%} %>
                                     </div>
                                 </div>
                                 <!-- /.yamm-content -->
                             </li>
                         </ul>
                     </li>
-
-					<li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe </b></a>                       
-					</li>
+                     <li class="dropdown yamm-fw">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Recipes <b class="caret"></b></a>
+                        <ul class="dropdown-menu" >
+                            <li>
+                                <div class="yamm-content">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <ul>
+                                                <li><a href="ViewRecipes.html">View Recipes</a>
+                                                </li>
+											<% if(session.getAttribute("userType")!=null){
+													if(session.getAttribute("userType").equals("V")) { %>
+                                                <li><a href="AddRecipe.html">Add Recipes</a>
+                                                </li>
+                                                <% } } %>
+                                                </ul>
+                                                </div>
+                                                </div>
+                                                </div>
+                                                </li>
+                                                </ul>
+                                                </li>
+                 <% if(session.getAttribute("userType")!=null) {
+                		if((Boolean)session.getAttribute("sessionExists")) { %>             
+                <li class="dropdown yamm-fw">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> 
+                       <% if(session.getAttribute("userType").equals("V")) { %>
+                        Vendor
+                        <% } else if(session.getAttribute("userType").equals("A")){  %>
+						Admin
+						<% } else { %>
+                        User
+                        <% } %> 
+                        <b class="caret"></b></a>
+                        <ul class="dropdown-menu" >
+                            <li>
+                                <div class="yamm-content">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <ul>
+                                            <% if(session.getAttribute("userType").equals("V")) { %>
+                                            <li><a href="AddProduct.jsp">Add Product</a>
+                                                </li>
+                                             <li><a href="Inventory.jsp">View Inventory</a>
+                                                </li>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+                                             <% }
+												else if(session.getAttribute("userType").equals("C")){ %>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% }
+												else if(session.getAttribute("userType").equals("A")){ %>
+												<li><a href="Inventory.jsp">View Inventory</a>
+                                                </li>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="vendorreport.jsp">Vendor Sales Report</a>
+                                                </li>
+                                                <li><a href="vendorstats.jsp">Vendor Revenue Report</a>
+                                                </li>
+                                                <li><a href="viewvendorlist.jsp">View List of Vendors</a>
+                                                </li>
+                                                <li><a href="viewuserlist.jsp">View List of Buyer</a>
+                                                </li>
+                                                <li><a href="userreport.jsp">View Buyer Report</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% } %>
+                                                </ul>
+                                                </div>
+                                                </div>
+                                                </div>
+                                                </li>
+                                                </ul>
+                                                </li>
+                                                <% } } %>
+                 <!-- <li th:unless="${session.sessionExists} == true"><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
+                    </li>
+						<li th:case="V"> 
+						<a href="AddRecipe.html" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe 
+						</a></li>
+						<li th:case="C"> 
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe 
+						</a></li>
 
                     <li >
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Farmers </b></a>
                        
-                    </li>
+                    </li> -->
                 </ul>
 
             </div>
@@ -359,7 +410,7 @@
                                 </div>
                                 <div class="pull-right">
                                     <button class="btn btn-default" onclick="updateCart(); return false;" ><i class="fa fa-refresh"></i> Update basket</button>
-                                    <button class="btn btn-primary" onclick = "updateCart();" >Proceed to Order review <i class="fa fa-chevron-right"></i>
+                                    <button type="submit" "btn btn-primary" onclick = "updateCart();" >Proceed to Order review <i class="fa fa-chevron-right"></i>
                                     </button>
                                 </div>
                             </div>

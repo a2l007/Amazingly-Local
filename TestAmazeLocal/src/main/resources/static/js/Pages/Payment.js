@@ -57,7 +57,7 @@ function SaveCard(){
 }
 
 function DeleteCard(paymentId){
-	alert("Payment id to be deleted new alert: "+paymentId);
+	//alert("Payment id to be deleted new alert: "+paymentId);
 	//Delete saved payment card details
 	 $.ajax({  
         url: "deleteCard?paymentId="+paymentId,  
@@ -96,7 +96,7 @@ function DeleteCard(paymentId){
 function saveOrder(){
 	
 	var selectedPayId = $("input[type=radio]:checked").val();
-
+alert("Payment id" +selectedPayId);
   	$('#divOrderModal').modal('show');
   	 
 	$.ajax({  

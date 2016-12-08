@@ -316,16 +316,10 @@
                 </div>
 
                 <div class="col-md-9" id="customer-order">
-                  <%  ShopCartCrud cart = new ShopCartCrud();
-                                    ArrayList<ShopCart> cartItems = new ArrayList<ShopCart>();
-                                    ShopCart orderDetails = new ShopCart();
-                                    orderDetails = cart.fetchOrderDetails(uId);
-                                    cartItems = cart.fetchCartItems(); 
-									%>
-                    
-							<%if(cartItems.size()>0){
+                           
+							<%cartItems = cart.fetchOrderCart(uId);  
+							if(cartItems.size()>0){
 							long OrderId = orderDetails.getOrderId();
-							int OrderQuantity = orderDetails.getOrderQuantity();
 							float OrderSubTotal = orderDetails.getOrderSubTotal();
 							String OrderDate = orderDetails.getOrderDate();
 							String OrderStatus = (orderDetails.getOrderStatus() == "New")?"being prepared":"Completed"; %>
@@ -349,7 +343,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                 <% for(int i=0;i<cartItems.size();i++) {
+                                 <% String deliveryAddress="";
+                                 for(int i=0;i<cartItems.size();i++) {
                         			   String name = cartItems.get(i).getProductName();
                         			   String imageName = cartItems.get(i).getImageName(); 
                         			   int units = cartItems.get(i).getInvQuantity();
@@ -357,7 +352,7 @@
                         			   float totalUnitPrice = unitPrice * units;
                         			   float discount = cartItems.get(i).getDiscount();
                         			   float totalPrice = totalUnitPrice-((discount/100)*totalUnitPrice);
-									   String deliveryAddress = cartItems.get(i).getDeliveryAddress();%>
+									    deliveryAddress = cartItems.get(i).getDeliveryAddress();%>
                                     <tr>
                                         <td>
                                             <a href="#">
@@ -411,6 +406,7 @@
                     <div>
                     <h3>No order details found</h3>
                     </div>
+                    <%} %>
                 </div>
 
             </div>

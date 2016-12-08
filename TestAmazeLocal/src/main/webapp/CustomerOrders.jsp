@@ -325,8 +325,7 @@
                         <div class="table-responsive">
                          <%   ArrayList<ShopCart> orderHistory = new ArrayList<ShopCart>();
                                     //Fetch user id from session
-                                    long userId = 100000;
-                                    orderHistory = cart.fetchOrderHistory(userId);
+                                    orderHistory = cart.fetchOrderHistory(uId);
                                     System.out.println("hello here is cart");
 									if(orderHistory.size()>0){
 									%>
@@ -352,7 +351,7 @@
                                         <td>$<%=orderTotal %></td>
                                         <td><span class="label label-info"><%=orderStatus %></span>
                                         </td>
-                                        <td><a href="orderdetails.jsp" class="btn btn-primary btn-sm">View</a>
+                                        <td><a href="orderdetails?orderId=<%=orderId%>" class="btn btn-primary btn-sm">View</a>
                                         </td>
                                     </tr>
                                  <%} %>   
