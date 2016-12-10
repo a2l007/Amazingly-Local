@@ -116,7 +116,7 @@
         <div class="container">
             <div class="navbar-header">
 
-                <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
+                <a class="navbar-brand home" href="index.jsp" data-animate-hover="bounce">
                     <img src="img/al_logo.png" alt="Obaju logo" class="lg">
                     <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
                 </a>
@@ -176,11 +176,11 @@
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <ul>
-                                                <li><a href="ViewRecipes.html">View Recipes</a>
+                                                <li><a href="recipe.jsp">View Recipes</a>
                                                 </li>
 											<% if(session.getAttribute("userType")!=null){
 													if(session.getAttribute("userType").equals("V")) { %>
-                                                <li><a href="AddRecipe.html">Add Recipes</a>
+                                                <li><a href="AddRecipe.jsp">Add Recipes</a>
                                                 </li>
                                                 <% } } %>
                                                 </ul>
@@ -211,6 +211,8 @@
                                             <% if(session.getAttribute("userType").equals("V")) { %>
                                             <li><a href="AddProduct.jsp">Add Product</a>
                                                 </li>
+                                                 <li><a href="vendorproductapproval.jsp">Process Orders</a>
+                                                </li>
                                              <li><a href="Inventory.jsp">View Inventory</a>
                                                 </li>
                                                 <li><a href="changepass.html">Change Password</a>
@@ -227,10 +229,10 @@
 												else if(session.getAttribute("userType").equals("A")){ %>
 												<li><a href="Inventory.jsp">View Inventory</a>
                                                 </li>
+                                                 <li><a href="saleapproval.jsp">Approve Sale Requests</a></li>
                                                 <li><a href="changepass.html">Change Password</a>
                                                 </li>
-                                                <li><a href="vendorreport.jsp">Vendor Sales Report</a>
-                                                </li>
+                                            
                                                 <li><a href="vendorstats.jsp">Vendor Revenue Report</a>
                                                 </li>
                                                 <li><a href="viewvendorlist.jsp">View List of Vendors</a>
@@ -475,10 +477,7 @@
                                 </div>
                                 <!-- /.ribbon -->
 
-                                <div class="ribbon gift">
-                                    <div class="theribbon">GIFT</div>
-                                    <div class="ribbon-background"></div>
-                                </div>
+                               
                                 <!-- /.ribbon -->
                             </div>
                             <!-- /.product -->
@@ -648,10 +647,7 @@
                                 </div>
                                 <!-- /.ribbon -->
 
-                                <div class="ribbon gift">
-                                    <div class="theribbon">GIFT</div>
-                                    <div class="ribbon-background"></div>
-                                </div>
+                               
                                 <!-- /.ribbon -->
                             </div>
                             <!-- /.product -->

@@ -130,7 +130,7 @@
                         <i class="fa fa-search"></i>
                     </button>
                     <a class="btn btn-default navbar-toggle" href="basket.html">
-                        <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs">3 items in cart</span>
+  <!--                      <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs">3 items in cart</span>-->
                     </a>
                 </div>
             </div>
@@ -176,15 +176,14 @@
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <ul>
-                                                <li><a href="ViewRecipes.html">View Recipes</a>
+                                                <li><a href="recipe.jsp">View Recipes</a>
                                                 </li>
 											<% if(session.getAttribute("userType")!=null){
 													if(session.getAttribute("userType").equals("V")) { %>
-                                                <li><a href="AddRecipe.html">Add Recipes</a>
+                                                <li><a href="AddRecipe.jsp">Add Recipes</a>
                                                 </li>
                                                 <% } } %>
                                                 </ul>
-                                                </div>
                                                 </div>
                                                 </div>
                                                 </li>
@@ -211,7 +210,11 @@
                                             <% if(session.getAttribute("userType").equals("V")) { %>
                                             <li><a href="AddProduct.jsp">Add Product</a>
                                                 </li>
+                                                <li><a href="vendorproductapproval.jsp">Process Orders</a>
+                                                </li>
                                              <li><a href="Inventory.jsp">View Inventory</a>
+                                                </li>
+                                                <li><a href="productreport.jsp">View Product Availability Report</a>
                                                 </li>
                                                 <li><a href="changepass.html">Change Password</a>
                                                 </li>
@@ -225,11 +228,8 @@
                                                 </li>
 												<% }
 												else if(session.getAttribute("userType").equals("A")){ %>
-												<li><a href="Inventory.jsp">View Inventory</a>
-                                                </li>
+                                                <li><a href="saleapproval.jsp">Approve Sale Requests</a></li>
                                                 <li><a href="changepass.html">Change Password</a>
-                                                </li>
-                                                <li><a href="vendorreport.jsp">Vendor Sales Report</a>
                                                 </li>
                                                 <li><a href="vendorstats.jsp">Vendor Revenue Report</a>
                                                 </li>
@@ -272,7 +272,7 @@
             <div class="navbar-buttons">
 
                 <div class="navbar-collapse collapse right" id="basket-overview">
-                    <a href="basket.html" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">3 items in cart</span></a>
+        <!--           <a href="basket.html" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">3 items in cart</span></a>-->
                 </div>
                 <!--/.nav-collapse -->
 
@@ -396,19 +396,302 @@
 
             <!-- *** HOT PRODUCT SLIDESHOW ***
  _________________________________________________________ -->
-            <div id="hot">
+                <div id="hot">
 
                 <div class="box">
                     <div class="container">
                         <div class="col-md-12">
-                            <h2>Fresh this week</h2>
+                            <h2>Hot this week</h2>
                         </div>
                     </div>
                 </div>
 
+                <div class="container">
+                    <div class="product-slider">
+                        <div class="item">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="detail.html">
+                                                <img src="images/ham2.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="detail.html">
+                                                <img src="images/ham2.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="detail.html" class="invisible">
+                                    <img src="img/product1.jpg" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="detail.html">Smoked Ham</a></h3>
+                                    <h4>Red Rosa Farm</h4>
+                                    
+                                    <p class="price">$26.00</p>
+                                </div>
+                                <!-- /.text -->
+                            </div>
+                            <!-- /.product -->
+                        </div>
+
+                        <div class="item">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="detail.html">
+                                                <img src="images/strawberries2.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="detail.html">
+                                                <img src="images/strawberries2.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="detail.html" class="invisible">
+                                    <img src="img/product2.jpg" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="detail.html">Crunch Much Strawberries</a></h3>
+                                    <h4>Red Rosa Farm</h4>
+                                    <p class="price"><del>$20</del> $14.00</p>
+                                </div>
+                                <!-- /.text -->
+
+                                <div class="ribbon sale">
+                                    <div class="theribbon">SALE</div>
+                                    <div class="ribbon-background"></div>
+                                </div>
+                                <!-- /.ribbon -->
+
+                                <div class="ribbon new">
+                                    <div class="theribbon">NEW</div>
+                                    <div class="ribbon-background"></div>
+                                </div>
+                                <!-- /.ribbon -->
+
+                                <div class="ribbon gift">
+                                    <div class="theribbon">GIFT</div>
+                                    <div class="ribbon-background"></div>
+                                </div>
+                                <!-- /.ribbon -->
+                            </div>
+                            <!-- /.product -->
+                        </div>
+
+                        <div class="item">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="detail.html">
+                                                <img src="images/broccoli-2.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="detail.html">
+                                                <img src="images/broccoli-2.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="detail.html" class="invisible">
+                                    <img src="img/product3.jpg" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="detail.html">Green Nutrition Broccoli</a></h3>
+                                    <h4>Red Rosa Farm</h4>
+                                    <p class="price">$13.00</p>
+                                </div>
+                                <!-- /.text -->
+                            </div>
+                            <!-- /.product -->
+                        </div>
+
+                        <div class="item">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="detail.html">
+                                                <img src="images/swiss1.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="detail.html">
+                                                <img src="images/swiss1.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="detail.html" class="invisible">
+                                    <img src="img/product3.jpg" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="detail.html">Nutra Dairy Farm Cheese</a></h3>
+                                    <h4>Nutra Dairy Farm</h4>
+                                    <p class="price">$21.00</p>
+                                </div>
+                                <!-- /.text -->
+                            </div>
+                            <!-- /.product -->
+                        </div>
+
+                        <div class="item">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="detail.html">
+                                                <img src="images/tomatoes1.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="detail.html">
+                                                <img src="images/tomatoes1.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="detail.html" class="invisible">
+                                    <img src="img/product2.jpg" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="detail.html">Roma Tomatoes</a></h3>
+                                    <h4>Red Rosa Farm</h4>
+                                    <p class="price">$8.00</p>
+                                </div>
+                                <!-- /.text -->
+
+                                <div class="ribbon new">
+                                    <div class="theribbon">NEW</div>
+                                    <div class="ribbon-background"></div>
+                                </div>
+                                <!-- /.ribbon -->
+                            </div>
+                            <!-- /.product -->
+                        </div>
+
+                        <div class="item">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="detail.html">
+                                                <img src="images/chicken3.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="detail.html">
+                                                <img src="images/chicken3.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="detail.html" class="invisible">
+                                    <img src="img/product1.jpg" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="detail.html">Local barn chicken</a></h3>
+                                    <h4>Farm Fresh Foods</h4>
+                                    <p class="price">$16.00</p>
+                                </div>
+                                <!-- /.text -->
+
+                                <!-- /.ribbon -->
+
+                            </div>
+                            <!-- /.product -->
+                        </div>
+                        <!-- /.col-md-4 -->
+
+                        <div class="item">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="detail.html">
+                                                <img src="images/grapes1.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="detail.html">
+                                                <img src="images/grapes1.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="detail.html" class="invisible">
+                                    <img src="img/product2.jpg" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="detail.html">Fresh Seedless Grapes</a></h3>
+                                    <h4>Froot-Fresh</h4>
+                                    <p class="price"><del>$5</del> $2.50</p>
+                                </div>
+                                <!-- /.text -->
+
+                                <div class="ribbon sale">
+                                    <div class="theribbon">SALE</div>
+                                    <div class="ribbon-background"></div>
+                                </div>
+                                <!-- /.ribbon -->
+
+                                <div class="ribbon new">
+                                    <div class="theribbon">NEW</div>
+                                    <div class="ribbon-background"></div>
+                                </div>
+                                <!-- /.ribbon -->
+
+                                <div class="ribbon gift">
+                                    <div class="theribbon">GIFT</div>
+                                    <div class="ribbon-background"></div>
+                                </div>
+                                <!-- /.ribbon -->
+                            </div>
+                            <!-- /.product -->
+                        </div>
+
+                        <div class="item">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="detail.html">
+                                                <img src="images/milk1.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="detail.html">
+                                                <img src="images/milk1.jpg" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="detail.html" class="invisible">
+                                    <img src="img/product3.jpg" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="detail.html">Low Fat Milk</a></h3>
+                                    <p class="price">$3.00</p>
+                                </div>
+                                <!-- /.text -->
+                            </div>
+                            <!-- /.product -->
+                        </div>
+
+                    </div>
+                    <!-- /.product-slider -->
+                </div>
+                <!-- /.container -->
 
             </div>
-            <!-- /#hot -->
 
             <!-- *** HOT END *** -->
 

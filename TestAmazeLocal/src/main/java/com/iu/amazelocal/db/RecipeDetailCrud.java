@@ -18,12 +18,13 @@ public class RecipeDetailCrud {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = ConnectionFactory.getConnObject();
 			// here sonoo is database name, root is username and password
-			String selectTypeSQL = "SELECT * FROM AL_RECIPE WHERE RecipeId = ?";
+			String selectTypeSQL = "SELECT * FROM AL_RECIPES WHERE RecipeId = ?";
+			System.out.println("SQL IS "+selectTypeSQL);
 			PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
 			stmt.setLong(1, RecipeId);
 			ResultSet detailrecipe=stmt.executeQuery();	
 			detailrecipe.next();
-			Recipe r=new Recipe(detailrecipe.getString("RecipeName"),detailrecipe.getString("Ingredients"),detailrecipe.getString("Instructions"),detailrecipe.getString("Image"),detailrecipe.getString("RecipeDes"));
+			Recipe r=new Recipe(detailrecipe.getString("RecipeName"),detailrecipe.getString("Ingredients"),detailrecipe.getString("Instructions"),detailrecipe.getString("RecipeImage"),detailrecipe.getString("Description"));
 			r.setRecipeId(detailrecipe.getLong("RecipeId"));
 			return r;
 		} 

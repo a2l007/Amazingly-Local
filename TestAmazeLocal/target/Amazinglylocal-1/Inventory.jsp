@@ -177,7 +177,7 @@
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <ul>
-                                                <li><a href="ViewRecipes.html">View Recipes</a>
+                                                <li><a href="recipe.jsp">View Recipes</a>
                                                 </li>
 											<% if(session.getAttribute("userType")!=null){
 													if(session.getAttribute("userType").equals("V")) { %>

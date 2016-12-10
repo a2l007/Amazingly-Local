@@ -19,7 +19,7 @@ public class RecipeViewCrud {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = ConnectionFactory.getConnObject();
 			// here sonoo is database name, root is username and password
-			String selectTypeSQL = "SELECT * FROM AL_RECIPE";
+			String selectTypeSQL = "SELECT * FROM AL_RECIPES";
 			Statement stmt = con.createStatement();
 			ResultSet allrecipe=stmt.executeQuery(selectTypeSQL);
 			Recipe rec;

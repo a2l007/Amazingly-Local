@@ -25,6 +25,7 @@
     <link href="css/animate.min.css" rel="stylesheet">
     <link href="css/owl.carousel.css" rel="stylesheet">
     <link href="css/owl.theme.css" rel="stylesheet">
+    <link href="css/img-size.css" rel="stylesheet">
 
     <!-- theme stylesheet -->
     <link href="css/style.default.css" rel="stylesheet" id="theme-stylesheet">
@@ -38,28 +39,37 @@
 
 	<%@page import="com.iu.amazelocal.models.ShopCart"%>
 	<%@page import="com.iu.amazelocal.db.ShopCartCrud"%>
+	<%@page import="java.util.HashMap"%>
+	<%@page import="com.iu.amazelocal.db.ProductTypeCrud"%>
 	<%@page import="java.util.ArrayList"%>
+	<%@page import="java.util.Map"%>
 
 </head>
 
 <body>
     <!-- *** TOPBAR ***
  _________________________________________________________ -->
-    <div id="top">
-        <div class="container">
+     <div id="top">
+       <div class="container">
             <div class="col-md-6 offer" data-animate="fadeInDown">
                 <a href="#" class="btn btn-success btn-sm" data-animate-hover="shake">Offer of the day</a>  <a href="#">Get flat 35% off on orders over $50!</a>
             </div>
             <div class="col-md-6" data-animate="fadeInDown">
                 <ul class="menu">
-                    <li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
+                 	<% if(session.getAttribute("sessionExists")!=null) {%>
+                 	
+                 	 <li> Welcome <%=session.getAttribute("userName")%><form action="logout" method="get">
+                    <input type="submit" value="Logout"></form> </li>
+                 	<%}
+						else { %>
+                    <li ><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
                     </li>
-                    <li><a href="register.html">Register</a>
+                    <li ><a href="register.html">Register</a>
                     </li>
-                    <li><a href="contact.html">Contact</a>
+                    <li ><a href="contact.html">Contact</a>
                     </li>
-                    <li><a href="#">Recently viewed</a>
-                    </li>
+                    <% }  %>                
+                  
                 </ul>
             </div>
         </div>
@@ -73,24 +83,13 @@
                     </div>
                     <div class="modal-body">
                         <form action="customer-orders.html" method="post">
-                        <div class="form-group">
-                                <input type="text" class="form-control" id="fname-modal" placeholder="First Name">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="lname-modal" placeholder="Last Name">
-                            </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="email-modal" placeholder="email">
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" id="password-modal" placeholder="password">
                             </div>
-							<div class="form-group">
-                                <input type="text" class="form-control" id="phone-modal" placeholder="Phone Number">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="address-modal" placeholder="Mailing Address">
-                            </div>
+
                             <p class="text-center">
                                 <button class="btn btn-primary"><i class="fa fa-sign-in"></i> Log in</button>
                             </p>
@@ -116,8 +115,8 @@
         <div class="container">
             <div class="navbar-header">
 
-                <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
-                    <img src="img/al_logo.png" alt="Obaju logo" class="lg" class="hidden-xs">
+                <a class="navbar-brand home" href="index.jsp" data-animate-hover="bounce">
+                    <img src="img/al_logo.png" alt="Obaju logo" class="lg">
                     <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
                 </a>
                 <div class="navbar-buttons">
@@ -137,8 +136,8 @@
                                    int OrderQuantity = 0;
                                    if(orderDetails != null){
                                    OrderQuantity = orderDetails.getOrderQuantity();}%>
-                    <a class="btn btn-default navbar-toggle" href="cart.jsp">
-                        <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs"><%=OrderQuantity %> items in cart</span>
+                    <a class="btn btn-default navbar-toggle" href="basket.html">
+                        <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs"><%=OrderQuantity  %> items in cart</span>
                     </a>
                 </div>
             </div>
@@ -154,76 +153,94 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <div class="yamm-content">
+                                <% ProductTypeCrud menuType=new ProductTypeCrud();
+                                	HashMap<String,ArrayList<String>> map = menuType.fetchProductTypeMap();
+                                for (Map.Entry<String, ArrayList<String>> entry : map.entrySet()) {
+                                	String productType=entry.getKey();
+                                	ArrayList<String> productSubTypeList=entry.getValue();%>
                                     <div class="row">
                                         <div class="col-sm-3">
-                                            <h5>Vegetables</h5>
-                                            <ul>
-                                                <li><a href="category.html">Tomato</a>
+                                            <h5><%=productType %></h5>
+											  <ul>
+                                            <% for(String productSubType:productSubTypeList){ %>
+                                                <li><a href="category?subtype=<%=productSubType%>"><%=productSubType %> </a>
                                                 </li>
-                                                <li><a href="category.html">Potato</a>
-                                                </li>
-                                                <li><a href="category.html">Onion</a>
-                                                </li>
-                                                <li><a href="category.html">Broccoli</a>
-                                                </li>
-                                                <li><a href="category.html">Egg Plant</a>
-                                                </li>
-                                                <li><a href="category.html">Broccoli</a>
-                                                </li>
+                                               <%} %>
                                             </ul>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <h5>Fruits</h5>
-                                            <ul>
-                                                <li><a href="category.html">Apple</a>
-                                                </li>
-                                                <li><a href="category.html">Citrus fruits</a>
-                                                </li>
-                                                <li><a href="category.html">Banana</a>
-                                                </li>
-                                                <li><a href="category.html">Melon</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <h5>Meat</h5>
-                                            <ul>
-                                                <li><a href="category.html">Beef</a>
-                                                </li>
-                                                <li><a href="category.html">Chicken</a>
-                                                </li>
-                                                <li><a href="category.html">Pork</a>
-                                                </li>
-                                                <li><a href="category.html">Turkey</a>
-                                                </li>                                  
-                                            </ul>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <h5>Dairy Products</h5>
-                                            <ul>
-                                                <li><a href="category.html">Milk</a>
-                                                </li>
-                                                <li><a href="category.html">Butter</a>
-                                                </li>
-                                                <li><a href="category.html">Cheese</a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <%} %>
                                     </div>
                                 </div>
                                 <!-- /.yamm-content -->
                             </li>
                         </ul>
                     </li>
-
-					<li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe </b></a>                       
-					</li>
+                     <li class="dropdown yamm-fw">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Recipes <b class="caret"></b></a>
+                        <ul class="dropdown-menu" >
+                            <li>
+                                <div class="yamm-content">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <ul>
+                                                <li><a href="ViewRecipes.html">View Recipes</a>
+                                                </li>
+											<% if(session.getAttribute("userType")!=null){
+													if(session.getAttribute("userType").equals("V")) { %>
+                                                <li><a href="AddRecipe.html">Add Recipes</a>
+                                                </li>
+                                                <% } } %>
+                                                </ul>
+                                                </div>
+                                                </div>
+                                                </div>
+                                                </li>
+                                                </ul>
+                                                </li>
+                 <% if(session.getAttribute("userType")!=null) {
+                		if((Boolean)session.getAttribute("sessionExists")) { %>             
+                <li class="dropdown yamm-fw">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> 
+                       <% if(session.getAttribute("userType").equals("V")) { %>
+                        Vendor
+                        <% } else { %>
+                        User
+                        <% } %> 
+                        <b class="caret"></b></a>
+                        <ul class="dropdown-menu" >
+                            <li>
+                                <div class="yamm-content">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <ul>
+                                            <% if(session.getAttribute("userType").equals("V")) { %>
+                                             <li><a href="Inventory.html">View Inventory</a>
+                                                </li>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+                                                </ul>
+                                                </div>
+                                                </div>
+                                                </div>
+                                                </li>
+                                                </ul>
+                                                </li>
+                                                <% } } }%>
+                 <!-- <li th:unless="${session.sessionExists} == true"><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
+                    </li>
+						<li th:case="V"> 
+						<a href="AddRecipe.html" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe 
+						</a></li>
+						<li th:case="C"> 
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Recipe 
+						</a></li>
 
                     <li >
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Farmers </b></a>
                        
-                    </li>
+                    </li> -->
                 </ul>
 
             </div>
@@ -232,7 +249,7 @@
             <div class="navbar-buttons">
 
                 <div class="navbar-collapse collapse right" id="basket-overview">
-                    <a href="cart.jsp" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"><%=OrderQuantity %> items in cart</span></a>
+                    <a href="basket.html" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">3 items in cart</span></a>
                 </div>
                 <!--/.nav-collapse -->
 
@@ -280,7 +297,7 @@
                         </li>
                         <li><a href="#">My orders</a>
                         </li>
-                        <li>Order # 1735</li>
+                        <li>Order # 10</li>
                     </ul>
 
                 </div>
@@ -301,10 +318,10 @@
                                     <a href="customer-orders.html"><i class="fa fa-list"></i> My orders</a>
                                 </li>
                                 <li>
-                                    <a href="changepassword.html"><i class="fa fa-user"></i> My account</a>
+                                    <a href="changepass.html"><i class="fa fa-user"></i> My account</a>
                                 </li>
                                 <li>
-                                    <a href="index.html"><i class="fa fa-sign-out"></i> Logout</a>
+                                    <a href="logout"><i class="fa fa-sign-out"></i> Logout</a>
                                 </li>
                             </ul>
                         </div>
@@ -317,7 +334,7 @@
 
                 <div class="col-md-9" id="customer-order">
                            
-							<%cartItems = cart.fetchOrderCart(uId);  
+							<%cartItems = (ArrayList<ShopCart>) request.getAttribute("orderItems"); 
 							if(cartItems.size()>0){
 							long OrderId = orderDetails.getOrderId();
 							float OrderSubTotal = orderDetails.getOrderSubTotal();
@@ -326,7 +343,7 @@
 						<div class="box">
                         <h1>Order #<%=OrderId %></h1>
 
-                        <p class="lead">Order #<%=OrderId %> was placed on <strong><%=OrderDate %></strong> and is currently <strong><%=OrderStatus %></strong>.</p>
+                        <p class="lead">Order #<%=10 %> was placed on <strong>8th December</strong> and is currently <strong><%=OrderStatus %></strong>.</p>
                         <p class="text-muted">If you have any questions, please feel free to <a href="contact.html">contact us</a>, our customer service center is working for you 24/7.</p>
 
                         <hr>
@@ -371,7 +388,7 @@
                                 <tfoot>
                                     <tr>
                                         <th colspan="5" class="text-right">Order subtotal</th>
-                                        <th>$<%=OrderSubTotal %></th>
+                                        <th>$33.98</th>
                                     </tr>
                                     <tr>
                                         <th colspan="5" class="text-right">Shipping and handling</th>
@@ -383,7 +400,7 @@
                                     </tr>
                                     <tr>
                                         <th colspan="5" class="text-right">Total</th>
-                                        <th>$<%=OrderSubTotal %></th>
+                                        <th>$33.98</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -397,7 +414,9 @@
                             </div>
                             <div class="col-md-6">
                                 <h2>Shipping address</h2>
-                                <p><%=deliveryAddress %></p>
+                                <p>Dragon Atul<br>
+                                   3230 John Pike Rd<br>
+                                   dragon.atul@gmail.com<br> 8122323</p>
                             </div>
                         </div>
 

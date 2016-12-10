@@ -34,6 +34,7 @@
     <link href="css/owl.theme.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="http://trirand.com/blog/jqgrid/themes/ui.jqgrid.css">
+        <link href="css/img-size.css" rel="stylesheet">
     
     <!-- theme stylesheet -->
     <link href="css/style.default.css" rel="stylesheet" id="theme-stylesheet">
@@ -213,7 +214,7 @@
                                         <div class="col-sm-3">
                                             <ul>
                                             <% if(session.getAttribute("userType").equals("V")) { %>
-                                             <li><a href="Inventory.html">View Inventory</a>
+                                             <li><a href="Inventory.jsp">View Inventory</a>
                                                 </li>
                                                 <li><a href="changepass.html">Change Password</a>
                                                 </li>
@@ -293,7 +294,7 @@
                     <ul class="breadcrumb">
                         <li><a href="#">Home</a>
                         </li>
-                        <li>User Report</li>
+                        <li>Product Report</li>
                     </ul>
                 </div>
 

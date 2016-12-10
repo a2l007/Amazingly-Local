@@ -34,6 +34,7 @@
     <link href="css/owl.theme.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="http://trirand.com/blog/jqgrid/themes/ui.jqgrid.css">
+        <link href="css/img-size.css" rel="stylesheet">
     
     <!-- theme stylesheet -->
     <link href="css/style.default.css" rel="stylesheet" id="theme-stylesheet">
@@ -122,7 +123,7 @@
         <div class="container">
             <div class="navbar-header">
 
-                <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
+                <a class="navbar-brand home" href="index.jsp" data-animate-hover="bounce">
                     <img src="img/al_logo.png" alt="Obaju logo" class="lg">
                     <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
                 </a>
@@ -145,7 +146,7 @@
             <div class="navbar-collapse collapse" id="navigation">
 
                 <ul class="nav navbar-nav navbar-left">
-                    <li class="active"><a href="index.html">Home</a>
+                    <li class="active"><a href="index.jsp">Home</a>
                     </li>
                     <li class="dropdown yamm-fw">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Shop <b class="caret"></b></a>
@@ -202,7 +203,9 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> 
                        <% if(session.getAttribute("userType").equals("V")) { %>
                         Vendor
-                        <% } else { %>
+                        <% } else if(session.getAttribute("userType").equals("A")){  %>
+						Admin
+						<% } else { %>
                         User
                         <% } %> 
                         <b class="caret"></b></a>
@@ -213,12 +216,39 @@
                                         <div class="col-sm-3">
                                             <ul>
                                             <% if(session.getAttribute("userType").equals("V")) { %>
-                                             <li><a href="Inventory.html">View Inventory</a>
+                                            <li><a href="AddProduct.jsp">Add Product</a>
+                                                </li>
+                                             <li><a href="Inventory.jsp">View Inventory</a>
+                                                </li>
+                                                <li><a href="productreport.jsp">View Product Availability Report</a>
                                                 </li>
                                                 <li><a href="changepass.html">Change Password</a>
                                                 </li>
                                                 <li><a href="logout">Logout</a>
                                                 </li>
+                                             <% }
+												else if(session.getAttribute("userType").equals("C")){ %>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% }
+												else if(session.getAttribute("userType").equals("A")){ %>
+												<li><a href="Inventory.jsp">View Inventory</a>
+                                                </li>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="vendorstats.jsp">Vendor Revenue Report</a>
+                                                </li>
+                                                <li><a href="viewvendorlist.jsp">View List of Vendors</a>
+                                                </li>
+                                                <li><a href="viewuserlist.jsp">View List of Buyer</a>
+                                                </li>
+                                                <li><a href="userreport.jsp">View Buyer Report</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% } %>
                                                 </ul>
                                                 </div>
                                                 </div>
@@ -226,7 +256,7 @@
                                                 </li>
                                                 </ul>
                                                 </li>
-                                                <% } } }%>
+                                                <% } } %>
                  <!-- <li th:unless="${session.sessionExists} == true"><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
                     </li>
 						<li th:case="V"> 
@@ -245,6 +275,7 @@
             </div>
             <!--/.nav-collapse -->
 
+           <!-- COPY FOR SEARCH BAR FROM HERE -->
             <div class="navbar-buttons">
 
                 <div class="navbar-collapse collapse right" id="basket-overview">
@@ -252,21 +283,30 @@
                 </div>
                 <!--/.nav-collapse -->
 
-                <div class="navbar-collapse collapse right" id="search-not-mobile">
-                    <button type="button" class="btn navbar-btn btn-primary" data-toggle="collapse" data-target="#search">
+                 <div class="navbar-collapse collapse right" id="search-not-mobile">
+                    <!-- <button type="button" class="btn navbar-btn btn-primary" data-toggle="collapse" data-target="#search">
                         <span class="sr-only">Toggle search</span>
                         <i class="fa fa-search"></i>
-                    </button>
+                    </button>  -->
                 </div>
 
             </div>
 
-            <div class="collapse clearfix" id="search">
+            <div class="clearfix collapse in" id="search">
 
-                <form class="navbar-form" role="search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                        <span class="input-group-btn">
+                <form class="navbar-form" role="search" action="search" method="post">
+                    <div class="row">
+                    <select name="criteria" id="criteria" class="form-control">
+   								<option value="All" selected="selected">All Departments</option>
+								<option value="VEGETABLES" selected="selected">Vegetables</option>
+								<option value="FRUITS">Fruits</option>
+								<option value="DAIRY">Dairy</option>
+								<option value="MEAT">Meat</option>
+								
+								
+							</select>
+                        <input type="text" class="form-control" placeholder="Search"  name="searchStr" id="searchStr">
+                        <span>
 
 			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
 
@@ -275,6 +315,8 @@
                 </form>
 
             </div>
+            <!-- COPY FOR SEARCH BAR TILL HERE -->
+
             <!--/.nav-collapse -->
 
         </div>
@@ -303,16 +345,9 @@
 						int currentMonthUsers=uc.fetchUserCount(true);
 						%>
                     <div class="box" id="boxxer">
-                    <table>
-                    <tr>
-                    <td>Total number of buyers registered</td><td> <%=userCount %></td>
-                    </tr>
-                    <tr>
-                    <td>Total number of buyers registered this month</td><td> <%=currentMonthUsers %></td>
-                    </table>
+                    <p class="active">Total number of buyers registered: <%=userCount %></p>
+                    <p class="active">Total number of buyers registered this month: <%=currentMonthUsers %></p>
 					<jsp:include page="userreportchart.jsp" />
-
-                        
                         </div>
                     <!-- /.box -->
                 </div>

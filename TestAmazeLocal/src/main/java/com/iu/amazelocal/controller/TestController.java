@@ -38,6 +38,8 @@ import com.iu.amazelocal.models.JqGridData;
 import com.iu.amazelocal.models.Login;
 import com.iu.amazelocal.models.LoginDao;
 import com.iu.amazelocal.models.Payment;
+import com.iu.amazelocal.models.ProductApprovalGrid;
+import com.iu.amazelocal.models.ProductApprovalGridData;
 import com.iu.amazelocal.models.ProductSubTypes;
 import com.iu.amazelocal.models.ProductType;
 import com.iu.amazelocal.models.Rating;
@@ -202,15 +204,23 @@ public class TestController {
     public String addNewRecipe(String RecipeName, String ingredients, String instructions, 
     		@RequestParam("RecipeImage") MultipartFile file, String description) throws IOException {
     	 System.out.println("Vendor ID is"+ (String)httpSession.getAttribute(userName));
-    	 File convFile = new File(file.getOriginalFilename());
-    	    convFile.createNewFile(); 
-    	    FileOutputStream fos = new FileOutputStream(convFile); 
-    	    fos.write(file.getBytes());
-    	    fos.close();
-       	 Recipe recip=new Recipe(RecipeName,ingredients,instructions,convFile.getName(),description);
+    	    
+    	    String fileName = new StringBuffer("images/").append(file.getOriginalFilename()).toString();
+    	    File convFile = new File(new StringBuffer(AppConstants.IMAGELOCATION).append(fileName).toString());
+        	System.out.println("Image location"+convFile.getAbsolutePath());
+       	    convFile.createNewFile(); 
+        	File tempFile = new File(new StringBuffer(AppConstants.TEMPLOCATION).append(fileName).toString());
+       	    System.out.println(convFile.getAbsolutePath());
+       	    FileOutputStream fos = new FileOutputStream(convFile); 
+       	    FileOutputStream tos = new FileOutputStream(tempFile); 
+       	    fos.write(file.getBytes());
+       	    tos.write(file.getBytes());
+       	    fos.close();
+       	    tos.close();
+       	 Recipe recip=new Recipe(RecipeName,ingredients,instructions,fileName,description);
        	 RecipeCrud rC=new RecipeCrud();
        	 rC.insertRecipe(recip);
-    	 return "RecipeSuccess";
+    	 return "recipe";
      }
      @RequestMapping(method = RequestMethod.GET, value = "/logout")
      public String doLogout(){
@@ -426,26 +436,29 @@ public class TestController {
 		 
         return "cart";
 }
-	 @RequestMapping(method = RequestMethod.GET, value = "/orderdetails")
-     public String fetchOrderCartItems(@RequestParam(value = "orderId", required=false) int ordId, HttpServletRequest request) {
-		 try {
-		// System.out.println("inside add to cart");
-             //long inventoryId = Long.parseLong(request.getParameter("inventoryId"));
-             //System.out.println("inside add to cart inventory id" + invId);
-             ShopCart cart = new ShopCart();
-             ArrayList<ShopCart> cartItems = new ArrayList<ShopCart>();
-             cart.setOrderId(ordId);
-             cart.setUserId((Long)httpSession.getAttribute(userId));
-             ShopCartCrud order =new ShopCartCrud();
-             cartItems = order.fetchOrderCart(cart);
-             }
-	       catch(Exception ex){
-	           System.out.println("Error"+ex.getMessage());
-	           ex.printStackTrace();
-	           return ex.getMessage();   
-	       }
-		 
-        return "cart";
+
+@RequestMapping(method = RequestMethod.GET, value = "/orderdetails")
+    public void fetchOrderCartItems(@RequestParam(value = "orderId", required=false) int ordId,
+            HttpServletRequest request, HttpServletResponse response) {
+         try {
+            ShopCart cart = new ShopCart();
+            ArrayList<ShopCart> cartItems = new ArrayList<ShopCart>();
+            cart.setOrderId(ordId);
+            cart.setUserId((Long)httpSession.getAttribute(userId));
+            ShopCartCrud order =new ShopCartCrud();
+            cartItems = order.fetchOrderCart(cart);
+            request.setAttribute("orderItems", cartItems ); 
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/orderdetails.jsp");
+            requestDispatcher.forward(request, response);
+
+            }
+           catch(Exception ex){
+               System.out.println("Error"+ex.getMessage());
+               ex.printStackTrace();
+               //return ex.getMessage();   
+           }
+         
+       return ;
 }
 	 @RequestMapping(method = RequestMethod.GET, value = "/getSaleApprovals")
      @ResponseBody        
@@ -720,7 +733,6 @@ public class TestController {
 	 
 	 
 	 @RequestMapping(value = "/saveOrder", method = RequestMethod.GET)
-	 
      public String saveOrder(HttpServletRequest request) throws IOException {
 	   try{
 		   long paymentId = Long.parseLong(request.getParameter("paymentId")); 
@@ -751,6 +763,7 @@ public class TestController {
 
       return "CustomerOrders";
 	 }
+	 
 	 @RequestMapping(method = RequestMethod.GET, value = "/getVendorSaleApprovals")
      @ResponseBody        
      public String getAllVendorSaleApprovals(
@@ -816,5 +829,42 @@ public class TestController {
              httpSession.setAttribute("ratings",ratlist);
         return "viewproduct";
 	 }
-	 
+	 @RequestMapping(method = RequestMethod.GET, value = "/getProductApprovals")
+     @ResponseBody        
+     public String getProductApprovals(
+    	     @RequestParam("_search") Boolean _search,
+    	     @RequestParam("nd") String nd, 
+    	     @RequestParam("rows") int rows, 
+    	     @RequestParam("page") int page, 
+    	     @RequestParam("sidx") String sidx, 
+    	     @RequestParam("sord") String sord) {
+		 ArrayList<ProductApprovalGrid> inventories = new ArrayList<ProductApprovalGrid>();
+		 String products = null;
+		 long vendorId=(long)httpSession.getAttribute(userId);
+	    try {
+	    	 InventoryCrud inventory=new InventoryCrud();
+	    	 inventories = inventory.fetchProductApprovalList(vendorId);
+	    	 System.out.println("Inventory size is"+inventories.size());
+	    	 int totalPages = (int) Math.floor((inventories.size()/rows)+1);
+	    	 ProductApprovalGridData gridData = new ProductApprovalGridData(totalPages, page,inventories.size(),inventories);
+	    	 ModelMap model = new ModelMap();
+	    	 model.put("products", inventories);
+	    	 ObjectMapper mapper = new ObjectMapper();
+	    	 products = mapper.writeValueAsString(gridData);
+	    	 System.out.println("Products are "+products);
+	    	 return products; 
+	    }
+       catch(Exception ex){
+           System.out.println("Error"+ex.getMessage());
+           ex.printStackTrace();
+           return ex.getMessage();   
+       }
+    }
+	 @RequestMapping(method = RequestMethod.POST, value = "/processpurchase")
+     public String processPurchase(@RequestParam("saleIds[]") int[] saleids) throws IOException {
+		 InventoryCrud ic=new InventoryCrud();
+		 ic.processProducts(saleids);
+     	System.out.println("Invrntory is"+saleids[0]);
+     	return "vendorprodapproval";
+	 }
 }

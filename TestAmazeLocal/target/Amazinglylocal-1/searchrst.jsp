@@ -178,7 +178,7 @@
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <ul>
-                                                <li><a href="ViewRecipes.html">View Recipes</a>
+                                                <li><a href="recipe.jsp">View Recipes</a>
                                                 </li>
 											<% if(session.getAttribute("userType")!=null){
 													if(session.getAttribute("userType").equals("V")) { %>
@@ -335,11 +335,9 @@
                         <li>Search Results</li>
                     </ul>
 
-                    <div class="box">
-                        <h1>Recipes</h1>
-                        <p>You can't just eat good food. You've got to talk about it too.</br>
-                         - Kurt Vonnegut
-                        </p>
+                    
+                        <h1>Search Results</h1>
+                        
                         
                     <%	ArrayList<InventoryMini> list = (ArrayList<InventoryMini>) request.getAttribute("searchresults");
                         HashSet<String> prodTypes=new HashSet<String>();
@@ -367,10 +365,10 @@
                                 <div class="form-group">
                                     <div class="checkbox" id="prodtypediv">
                                     <ul style="list-style: none">
-                                    <% for(String types:prodTypes) { %>
+                                    <% for(String prods:prodSubTypes) { %>
                                     <li>
                                         <label>
-                                            <input type="checkbox" value="<%=types %>"><%=types %>
+                                            <input type="checkbox" value="<%=prods %>"><%=prods %>
                                         </label>
                                         </li>
                                         <% } %>
@@ -396,10 +394,10 @@
                                 <div class="form-group">
                                 <div class="checkbox" id="prodsubtypediv">
                                     <ul style="list-style: none">
-                                <% for(String prods:prodSubTypes) { %>
+                                <% for(String types:prodTypes) { %>
                                 <li>
                                         <label>
-                                            <input type="checkbox" value="<%=prods %>"><%=prods %>
+                                            <input type="checkbox" value="<%=types %>"><%=types %>
                                         </label>
                                     </li>
                                     <% } %>
@@ -662,7 +660,7 @@ function printItems(){
 }
 </script> 
 
-                </div>
+               
                 <!-- /.col-md-9 -->
 
             </div>

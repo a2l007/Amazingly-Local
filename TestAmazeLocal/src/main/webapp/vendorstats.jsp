@@ -219,6 +219,8 @@
                                             <% if(session.getAttribute("userType").equals("V")) { %>
                                             <li><a href="AddProduct.jsp">Add Product</a>
                                                 </li>
+                                                <li><a href="vendorprodsale.jsp">View Product sale report</a>
+                                                </li>
                                              <li><a href="Inventory.jsp">View Inventory</a>
                                                 </li>
                                                 <li><a href="changepass.html">Change Password</a>
@@ -236,8 +238,6 @@
 												<li><a href="Inventory.jsp">View Inventory</a>
                                                 </li>
                                                 <li><a href="changepass.html">Change Password</a>
-                                                </li>
-                                                <li><a href="vendorreport.jsp">Vendor Sales Report</a>
                                                 </li>
                                                 <li><a href="vendorstats.jsp">Vendor Revenue Report</a>
                                                 </li>

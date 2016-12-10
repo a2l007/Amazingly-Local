@@ -8,6 +8,7 @@ import com.iu.amazelocal.config.ConnectionFactory;
 import com.iu.amazelocal.models.Inventory;
 import com.iu.amazelocal.models.InventoryGrid;
 import com.iu.amazelocal.models.InventoryMini;
+import com.iu.amazelocal.models.ProductApprovalGrid;
 import com.iu.amazelocal.models.ProductSaleDao;
 import com.iu.amazelocal.models.ProductSubTypes;
 import com.iu.amazelocal.models.ProductType;
@@ -291,7 +292,16 @@ public class InventoryCrud {
 		try{
 		Connection con = ConnectionFactory.getConnObject();
 		// here sonoo is database name, root is username and password
-		String selectTypeSQL = " SELECT i.inventoryid,i.productname,i.imagename, i.productrating,v.vendorname FROM "
+		String selectTypeSQL ="";
+		if(searchStr.equals("")){
+			selectTypeSQL = " SELECT i.inventoryid,i.productname,i.imagename, i.productrating,v.vendorname FROM "
+					+ "  AL_PRODUCT_TYPE t, AL_PRODUCTSUBTYPE st, AL_INVENTORY i, AL_VENDORS v WHERE "
+					+ " t.producttypeid = st.producttypeid AND st.productsubid = i.productsubid "
+					+ "AND i.vendorid=v.vendorid "
+					+ "AND t.typename = ? ";
+		}
+		else{
+		selectTypeSQL = " SELECT i.inventoryid,i.productname,i.imagename, i.productrating,v.vendorname FROM "
 				+ "  AL_PRODUCT_TYPE t, AL_PRODUCTSUBTYPE st, AL_INVENTORY i, AL_VENDORS v WHERE "
 				+ " t.producttypeid = st.producttypeid AND st.productsubid = i.productsubid "
 				+ "AND i.vendorid=v.vendorid "
@@ -302,13 +312,15 @@ public class InventoryCrud {
 				+ "SELECT i.inventoryid, i.productname, i.imagename, i.productrating, v.vendorname "
 				+ "FROM   AL_INVENTORY i, AL_VENDORS v WHERE  i.productname LIKE ? "
 				+ "AND i.vendorid=v.vendorid"; 
+		}
 		PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
 	
 		stmt.setString(1, type);
-		stmt.setString(2, "%"+searchStr+"%");
-		stmt.setString(3, "%"+searchStr+"%");
-		stmt.setString(4, "%"+searchStr+"%");
-
+		if(!(searchStr.equals(""))){
+			stmt.setString(2, "%"+searchStr+"%");
+			stmt.setString(3, "%"+searchStr+"%");
+			stmt.setString(4, "%"+searchStr+"%");
+		}
 		ResultSet res=stmt.executeQuery();
 		ArrayList<InventoryMini> inventoryList=new ArrayList<InventoryMini>();
 		String productTypeSql="select st.ProdSubTypeName,pt.TypeName from "
@@ -516,4 +528,62 @@ public class InventoryCrud {
             return false;
         }
     }
+	
+	public ArrayList<ProductApprovalGrid> fetchProductApprovalList(long vendorId){
+		try{
+		Connection con = ConnectionFactory.getConnObject();
+		// here sonoo is database name, root is username and password
+		String selectTypeSQL = "select sc.cartId,u.FirstName,u.LastName,u.EmailAddress,u.MailingAddress, oh.OrderDate,i.ProductName,sc.Quantity "
+				+ "from AL_ORDER_HISTORY oh,AL_SHOP_CART sc,AL_INVENTORY i,AL_USERS u where oh.OrderId=sc.OrderId "
+				+ "AND sc.InventoryId=i.InventoryId AND oh.UserId=u.UserId AND oh.OrderStatus='New' AND i.VendorId= 2 ";
+
+		PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
+		//stmt.setLong(1,vendorId);
+		ResultSet res=stmt.executeQuery(selectTypeSQL);
+		ArrayList<ProductApprovalGrid> inventoryList=new ArrayList<ProductApprovalGrid>();
+		while (res.next()){
+			int cartId=res.getInt("cartId");
+			String firstName=res.getString("FirstName");
+			String lastName=res.getString("LastName");
+			String email=res.getString("EmailAddress");
+			String mailingAddress=res.getString("MailingAddress");
+			String orderDate=res.getString("OrderDate");
+			String productName=res.getString("ProductName");
+			int qty=res.getInt("Quantity");
+			ProductApprovalGrid sg=new ProductApprovalGrid(cartId,firstName,lastName,email,mailingAddress,orderDate,productName,qty);
+			inventoryList.add(sg);
+		}
+		System.out.println("Inventory size is"+inventoryList.size());
+		return inventoryList;
+		}
+		catch(SQLException e){
+			System.out.println(e);
+			return null;
+		}
+	}
+	public void processProducts(int[] inventory){
+		try{
+			Connection con = ConnectionFactory.getConnObject();
+			int invLength=inventory.length;
+			StringBuffer params=new StringBuffer("update AL_ORDER_HISTORY set OrderStatus='Processed' "
+					+ "where orderId in (select orderId from AL_SHOP_CART where cartId IN (");
+ 
+			for(int i=0;i<invLength-1;i++){
+				params.append("?,");
+			}
+			params.append("?");
+			String selectTypeSQL = params.append(" ))").toString();
+
+			PreparedStatement stmt = con.prepareStatement(selectTypeSQL);
+			for(int i=0;i<invLength;i++){
+				stmt.setInt(i+1, inventory[i]);
+			}
+			stmt.executeUpdate();
+			
+			System.out.println("Updated");
+			}
+			catch(SQLException e){
+				System.out.println(e);
+			}
+	}
 }

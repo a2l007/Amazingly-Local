@@ -232,6 +232,8 @@
                                                 </li>
                                              <% }
 												else if(session.getAttribute("userType").equals("C")){ %>
+												<li><a href="CustomerOrder.jsp">Order History</a>
+                                                </li>
                                                 <li><a href="changepass.html">Change Password</a>
                                                 </li>
                                                 <li><a href="logout">Logout</a>
@@ -374,11 +376,11 @@
                                         <tr class = "cart_item" id = "trCart_<%=cartId%>">
                                             <td>
                                                 <a href="#">
-                                                <img src="img/<%=imageName%>" >
+                                                <img src="<%=imageName%>" >
                                                 <input type="hidden" name="orderId" value="<%=orderId%>">        
                                                 </a>
                                             </td>
-                                            <td><a href="#"><%=name%></a>
+                                            <td><a href="viewproduct?inventoryId="<%=invId%>><%=name%></a>
                                             </td>
                                             <td colspan="2">
                                             <input name = "itemQuantity" type="number" value=<%=units%> class="form-control" min="1" max=<%=quantityAvailable%>>                                            
@@ -410,7 +412,7 @@
                                 </div>
                                 <div class="pull-right">
                                     <button class="btn btn-default" onclick="updateCart(); return false;" ><i class="fa fa-refresh"></i> Update basket</button>
-                                    <button type="submit" "btn btn-primary" onclick = "updateCart();" >Proceed to Order review <i class="fa fa-chevron-right"></i>
+                                    <button type="submit" class= "btn btn-primary" onclick = "updateCart();" >Proceed to Order review <i class="fa fa-chevron-right"></i>
                                     </button>
                                 </div>
                             </div>

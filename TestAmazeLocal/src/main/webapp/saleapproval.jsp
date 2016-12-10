@@ -31,6 +31,7 @@
     <link href="css/owl.theme.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="http://trirand.com/blog/jqgrid/themes/ui.jqgrid.css">
+                <link href="css/img-size.css" rel="stylesheet">
     
     <!-- theme stylesheet -->
     <link href="css/style.default.css" rel="stylesheet" id="theme-stylesheet">
@@ -111,11 +112,11 @@
     <!-- *** NAVBAR ***
  _________________________________________________________ -->
 
-    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+   <div class="navbar navbar-default yamm" role="navigation" id="navbar">
         <div class="container">
             <div class="navbar-header">
 
-                <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
+                <a class="navbar-brand home" href="index.jsp" data-animate-hover="bounce">
                     <img src="img/al_logo.png" alt="Obaju logo" class="lg">
                     <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
                 </a>
@@ -138,7 +139,7 @@
             <div class="navbar-collapse collapse" id="navigation">
 
                 <ul class="nav navbar-nav navbar-left">
-                    <li class="active"><a href="index.html">Home</a>
+                    <li class="active"><a href="index.jsp">Home</a>
                     </li>
                     <li class="dropdown yamm-fw">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Shop <b class="caret"></b></a>
@@ -175,7 +176,7 @@
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <ul>
-                                                <li><a href="ViewRecipes.html">View Recipes</a>
+                                                <li><a href="recipe.jsp">View Recipes</a>
                                                 </li>
 											<% if(session.getAttribute("userType")!=null){
 													if(session.getAttribute("userType").equals("V")) { %>
@@ -195,7 +196,9 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> 
                        <% if(session.getAttribute("userType").equals("V")) { %>
                         Vendor
-                        <% } else { %>
+                        <% } else if(session.getAttribute("userType").equals("A")){  %>
+						Admin
+						<% } else { %>
                         User
                         <% } %> 
                         <b class="caret"></b></a>
@@ -206,12 +209,39 @@
                                         <div class="col-sm-3">
                                             <ul>
                                             <% if(session.getAttribute("userType").equals("V")) { %>
-                                             <li><a href="Inventory.html">View Inventory</a>
+                                            <li><a href="AddProduct.jsp">Add Product</a>
+                                                </li>
+                                             <li><a href="Inventory.jsp">View Inventory</a>
                                                 </li>
                                                 <li><a href="changepass.html">Change Password</a>
                                                 </li>
                                                 <li><a href="logout">Logout</a>
                                                 </li>
+                                             <% }
+												else if(session.getAttribute("userType").equals("C")){ %>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% }
+												else if(session.getAttribute("userType").equals("A")){ %>
+												<li><a href="Inventory.jsp">View Inventory</a>
+                                                </li>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="vendorreport.jsp">Vendor Sales Report</a>
+                                                </li>
+                                                <li><a href="vendorstats.jsp">Vendor Revenue Report</a>
+                                                </li>
+                                                <li><a href="viewvendorlist.jsp">View List of Vendors</a>
+                                                </li>
+                                                <li><a href="viewuserlist.jsp">View List of Buyer</a>
+                                                </li>
+                                                <li><a href="userreport.jsp">View Buyer Report</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% } %>
                                                 </ul>
                                                 </div>
                                                 </div>
@@ -219,7 +249,7 @@
                                                 </li>
                                                 </ul>
                                                 </li>
-                                                <% } } }%>
+                                                <% } } %>
                  <!-- <li th:unless="${session.sessionExists} == true"><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
                     </li>
 						<li th:case="V"> 

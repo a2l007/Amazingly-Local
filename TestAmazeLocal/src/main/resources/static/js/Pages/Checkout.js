@@ -66,7 +66,7 @@ function SaveAddress(){
         //	 alert("Hello successWW");
          },  
          error: function () {  
-            alert("Error while processing your request");  
+           // alert("Error while processing your request");  
          }  
       });
 	}else{

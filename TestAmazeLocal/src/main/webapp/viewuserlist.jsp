@@ -31,6 +31,7 @@
     <link href="css/owl.theme.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="http://trirand.com/blog/jqgrid/themes/ui.jqgrid.css">
+                <link href="css/img-size.css" rel="stylesheet">
     
     <!-- theme stylesheet -->
     <link href="css/style.default.css" rel="stylesheet" id="theme-stylesheet">
@@ -50,7 +51,7 @@
     <!-- *** TOPBAR ***
  _________________________________________________________ -->
     <div id="top">
-       <div class="container">
+        <div class="container">
             <div class="col-md-6 offer" data-animate="fadeInDown">
                 <a href="#" class="btn btn-success btn-sm" data-animate-hover="shake">Offer of the day</a>  <a href="#">Get flat 35% off on orders over $50!</a>
             </div>
@@ -62,14 +63,15 @@
                     <input type="submit" value="Logout"></form> </li>
                  	<%}
 						else { %>
-                    <li ><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
+                    <li ><a href="loginlanding.html"  >Login</a>
                     </li>
                     <li ><a href="register.html">Register</a>
                     </li>
                     <li ><a href="contact.html">Contact</a>
                     </li>
-                    <% }  %>                
-                  
+                    <% }  %>
+                    
+                   
                 </ul>
             </div>
         </div>
@@ -115,7 +117,7 @@
         <div class="container">
             <div class="navbar-header">
 
-                <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
+                <a class="navbar-brand home" href="index.jsp" data-animate-hover="bounce">
                     <img src="img/al_logo.png" alt="Obaju logo" class="lg">
                     <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
                 </a>
@@ -138,7 +140,7 @@
             <div class="navbar-collapse collapse" id="navigation">
 
                 <ul class="nav navbar-nav navbar-left">
-                    <li class="active"><a href="index.html">Home</a>
+                    <li class="active"><a href="index.jsp">Home</a>
                     </li>
                     <li class="dropdown yamm-fw">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Shop <b class="caret"></b></a>
@@ -195,7 +197,9 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> 
                        <% if(session.getAttribute("userType").equals("V")) { %>
                         Vendor
-                        <% } else { %>
+                        <% } else if(session.getAttribute("userType").equals("A")){  %>
+						Admin
+						<% } else { %>
                         User
                         <% } %> 
                         <b class="caret"></b></a>
@@ -206,12 +210,39 @@
                                         <div class="col-sm-3">
                                             <ul>
                                             <% if(session.getAttribute("userType").equals("V")) { %>
-                                             <li><a href="Inventory.html">View Inventory</a>
+                                            <li><a href="AddProduct.jsp">Add Product</a>
+                                                </li>
+                                                <li><a href="vendorprodsale.jsp">View Product sale report</a>
+                                                </li>
+                                             <li><a href="Inventory.jsp">View Inventory</a>
                                                 </li>
                                                 <li><a href="changepass.html">Change Password</a>
                                                 </li>
                                                 <li><a href="logout">Logout</a>
                                                 </li>
+                                             <% }
+												else if(session.getAttribute("userType").equals("C")){ %>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% }
+												else if(session.getAttribute("userType").equals("A")){ %>
+												<li><a href="Inventory.jsp">View Inventory</a>
+                                                </li>
+                                                <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="vendorstats.jsp">Vendor Revenue Report</a>
+                                                </li>
+                                                <li><a href="viewvendorlist.jsp">View List of Vendors</a>
+                                                </li>
+                                                <li><a href="viewuserlist.jsp">View List of Buyers</a>
+                                                </li>
+                                                <li><a href="userreport.jsp">View Buyer Report</a>
+                                                </li>
+                                                <li><a href="logout">Logout</a>
+                                                </li>
+												<% } %>
                                                 </ul>
                                                 </div>
                                                 </div>
@@ -219,7 +250,7 @@
                                                 </li>
                                                 </ul>
                                                 </li>
-                                                <% } } }%>
+                                                <% } } %>
                  <!-- <li th:unless="${session.sessionExists} == true"><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
                     </li>
 						<li th:case="V"> 
@@ -295,8 +326,8 @@
                     <div class="box">
 
                         <form action="@{/getuserlist}" method="get">
-                            <h1>Products</h1>
-                            <p class="text-muted">Following are the list of the users in the system.</p>
+                            <h1>Buyer report</h1>
+                            <p class="text-muted">Following are the list of the buyers in the system.</p>
                                                       <!-- /.table-responsive -->
                                                        <div class="table-responsive">
                                 <table id="userTable"></table>

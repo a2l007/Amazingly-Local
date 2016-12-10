@@ -21,12 +21,11 @@ function updateCart(){
          data: JSON.stringify(items),
          contentType: "application/json; charset=utf-8",
          success: function (data) { 
-        	 alert("Hello successWW");
 
         	 window.location.href = "OrderReview.jsp";
          },  
          error: function () {  
-            alert("Error while processing your request");  
+            //alert("Error while processing your request");  
          }  
       });
 }
@@ -40,7 +39,7 @@ function DeleteCartItem(cartId, orderId){
         contentType: "application/json; charset=utf-8",
         success: function (data) { 
         	
-         alert("Delete cart item successful! : " + data + " this was the data");
+         //alert("Delete cart item successful! : " + data + " this was the data");
 
          //hide the modal
      	 $('#myModal_'+cartId).modal('hide');
@@ -55,13 +54,13 @@ function DeleteCartItem(cartId, orderId){
     	 //Show the success modal
        	 $('#divSuccessModal').modal('show');
         } else{
-        	alert("Error occured!");
+        	//alert("Error occured!");
          }
         },  
         error: function () {  
         	 //hide the modal
         	 $('#myModal_'+cartId).modal('hide');
-          	 alert("Error occured!");
+          	 //alert("Error occured!");
         }  
      });
 }

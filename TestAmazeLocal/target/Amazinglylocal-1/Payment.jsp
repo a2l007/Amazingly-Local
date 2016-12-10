@@ -128,7 +128,7 @@
         <div class="container">
             <div class="navbar-header">
 
-                <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
+                <a class="navbar-brand home" href="index.jsp" data-animate-hover="bounce">
                     <img src="img/al_logo.png" alt="Obaju logo" class="lg" class="hidden-xs">
                     <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Amazingly Local!</span>
                 </a>
@@ -159,7 +159,7 @@
             <div class="navbar-collapse collapse" id="navigation">
 
                 <ul class="nav navbar-nav navbar-left">
-                    <li class="active"><a href="index.html">Home</a>
+                    <li class="active"><a href="index.jsp">Home</a>
                     </li>
                     <li class="dropdown yamm-fw">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Shop <b class="caret"></b></a>
@@ -403,8 +403,9 @@
                                     <a href="Checkout.jsp" class="btn btn-default"><i class="fa fa-chevron-left"></i>Edit the address</a>
                                 </div>
                                 <div class="pull-right">
-                                    <button class="btn btn-primary" onclick ="saveOrder()">Place the order<i class="fa fa-chevron-right"></i>
-                                    </button>
+                                    <a href="CustomerOrders.jsp" class="btn btn-primary">
+                                    Place the order<i class="fa fa-chevron-right"></i></a>
+                                    
                                 </div>
                             </div>
                         </form>

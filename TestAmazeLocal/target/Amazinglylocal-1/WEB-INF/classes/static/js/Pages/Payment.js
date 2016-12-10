@@ -27,7 +27,6 @@ function SaveCard(){
 	}
 	var cardDetails = cardNumber + "~" + name + "~" + Cvv + "~" + expMonth + "~" + expYear;
 	
-	alert("Name: "+ name + "Mailing Address:" + cardNumber + "Exp year:"+ expYear +"month: "+expMonth);
 	
 	if(isValid){
 		
@@ -44,7 +43,7 @@ function SaveCard(){
          },  
          error: function () { 
         	$('#Payment_Modal').modal('hide');
-            alert("Error while processing your request");  
+            //alert("Error while processing your request");  
          }  
       });
 	}else
@@ -65,7 +64,6 @@ function DeleteCard(paymentId){
         contentType: "application/json; charset=utf-8",
         success: function (data) { 
         	
-         alert("Delete card successful! :" + data + "this was the data");
 
          //hide the modal
      	 $('#deleteModal_'+paymentId).modal('hide');
@@ -83,12 +81,12 @@ function DeleteCard(paymentId){
     	 //Show the success modal
        	 $('#divSuccessModal').modal('show');
         } else{
-        	alert("Error occured!");
+        	//alert("Error occured!");
          }
         },  
         error: function () {  
         	$('#deleteModal_'+paymentId).modal('hide');
-          	alert("Error occured!");
+          	//alert("Error occured!");
         }  
      });
 }
@@ -96,7 +94,7 @@ function DeleteCard(paymentId){
 function saveOrder(){
 	
 	var selectedPayId = $("input[type=radio]:checked").val();
-alert("Payment id" +selectedPayId);
+	
   	$('#divOrderModal').modal('show');
   	 
 	$.ajax({  
@@ -104,9 +102,10 @@ alert("Payment id" +selectedPayId);
         type: "GET",  
         contentType: "application/json; charset=utf-8",
         success: function (data) {
+       	window.location.href = "CustomerOrders.jsp";
         },  
         error: function () { 
-          	alert("Error occured!");
+          //	alert("Error occured!");
         }  
      });
 }
