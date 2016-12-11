@@ -419,13 +419,12 @@ public class TestController {
 	 @RequestMapping(method = RequestMethod.GET, value = "/cart")
      public String AddToCart(@RequestParam(value = "inventoryId", required=false) int invId, HttpServletRequest request) {
 		 try {
-		 System.out.println("inside add to cart");
-             //long inventoryId = Long.parseLong(request.getParameter("inventoryId"));
-             System.out.println("inside add to cart inventory id" + invId);
+		 System.out.println("Inside add to cart controller");
              ShopCart cart = new ShopCart();
              cart.setInventoryId(invId);
              cart.setUserId((Long)httpSession.getAttribute(userId));
              ShopCartCrud order =new ShopCartCrud();
+             System.out.println("User ID: "+cart.getUserId() + " InventoryId : "+cart.getInventoryId());
              order.insertOrder(cart);
              }
 	       catch(Exception ex){
@@ -455,7 +454,6 @@ public class TestController {
            catch(Exception ex){
                System.out.println("Error"+ex.getMessage());
                ex.printStackTrace();
-               //return ex.getMessage();   
            }
          
        return ;
@@ -602,7 +600,6 @@ public class TestController {
 	     }
 	 
 	 @RequestMapping(method = RequestMethod.GET, value = "/deleteItem")
-	 @ResponseBody
      public String deleteCartItem(HttpServletRequest request) throws IOException {
 	   try{
 		   long cartId = Long.parseLong(request.getParameter("cartId"));
@@ -612,17 +609,14 @@ public class TestController {
 		   long uId =(long)httpSession.getAttribute(userId);
 		   ShopCartCrud cart = new ShopCartCrud();
 		   ShopCart cartItem = new ShopCart(cartId, orderId, uId);
-		   if(cart.deleteCartItem(cartItem)){
-			 return "success";  
-		   }
+		   cart.deleteCartItem(cartItem);
 		  }
 	   catch(Exception ex){
 		   System.out.println("Error"+ex.getMessage());
 	       ex.printStackTrace();
 	       return ex.getMessage();
 	   }
-
-	   return "error";
+	   return "cart";
 	 }
 	 
 	 @RequestMapping(value = "/updateCart", headers="Accept=*/*", consumes="application/json", method = RequestMethod.POST)
@@ -642,6 +636,7 @@ public class TestController {
            for(int i = 0; i < cartItems.size(); i++){
    			System.out.println("in shop cart curd: " + cartItems.get(i).getCartId());
    			   ShopCart cartItem = new ShopCart(); 
+   			   System.out.println("Total price inside the loop"+ cartItems.get(i).getTotalPrice());
    			   cartItem = cart.updateCartQuantity(cartItems.get(i));
    			   orderId = cartItems.get(i).getOrderId();
    			   orderTotal += cartItem.getInvTotalPrice();

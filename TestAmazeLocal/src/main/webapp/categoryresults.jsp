@@ -62,7 +62,7 @@
                  	<% if(session.getAttribute("sessionExists")!=null) {%>
                  	
                  	 <li> Welcome <%=session.getAttribute("userName")%><form action="logout" method="get">
-                    <input type="submit" value="Logout"></form> </li>
+                    <input class="btn btn-primary" type="submit" value="Logout"></form> </li>
                  	<%}
 						else { %>
                     <li ><a href="loginlanding.html" >Login</a>

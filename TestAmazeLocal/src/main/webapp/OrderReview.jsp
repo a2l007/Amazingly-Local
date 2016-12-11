@@ -64,7 +64,7 @@
                  	<% if(session.getAttribute("sessionExists")!=null) {%>
                  	
                  	 <li> Welcome <%=session.getAttribute("userName")%><form action="logout" method="get">
-                    <input type="submit" value="Logout"></form> </li>
+                    <input type="submit" value="Logout" class="btn btn-primary"></form> </li>
                  	<%}
 						else { %>
                     <li ><a href="loginlanding.html" >Login</a>
@@ -234,6 +234,8 @@
 												else if(session.getAttribute("userType").equals("C")){ %>
                                                 <li><a href="changepass.html">Change Password</a>
                                                 </li>
+                                                <li><a href="CustomerOrders.jsp">Order History</a>
+                                                </li>
                                                 <li><a href="logout">Logout</a>
                                                 </li>
 												<% }
@@ -388,7 +390,7 @@
                                             <td><%=units%></td>
                                             <td>$<%=unitPrice%></td>
                                             <td><%=discount%>%</td>
-                                            <td>$<%=totalUnitPrice%></td>
+                                            <td>$<%=totalPrice%></td>
                                         </tr>
                                    <%}%> 
                                         </tbody>

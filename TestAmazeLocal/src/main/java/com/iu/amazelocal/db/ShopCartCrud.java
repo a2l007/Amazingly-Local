@@ -71,7 +71,7 @@ public class ShopCartCrud {
 		Connection con = ConnectionFactory.getConnObject();
 		try {
 			System.out.println("Delete CartItems insiseddvcdhjhdsj !!!");
-			String countItemsQuery = "(SELECT COUNT(*) AS TOTALROWS FROM AL_SHOP_CART SC"
+			String countItemsQuery = "(SELECT SC.CartId, TotalPrice, Quantity, OrderTotal, OrderQuantity FROM AL_SHOP_CART SC"
 					+" INNER JOIN AL_ORDER_HISTORY OH ON SC.OrderId = OH.OrderId WHERE OH.OrderId = ? AND SC.CartId = ? AND OH.UserId = ?);";
 		
 			PreparedStatement stmt = con.prepareStatement(countItemsQuery);
@@ -79,21 +79,22 @@ public class ShopCartCrud {
 			stmt.setLong(2, cartItem.getCartId());
 			stmt.setLong(3, cartItem.getUserId());
 			ResultSet res = stmt.executeQuery();
-			int totalItems = 0;
 			
 			if(res.next()){
-				totalItems = Integer.parseInt(res.getString("TOTALROWS"));
-			}
-			String deleteItemsQuery = "DELETE FROM  AL_SHOP_CART WHERE CartId = ?; ";
-			if(totalItems > 1){
-				deleteItemsQuery += " DELETE FROM  AL_ORDER_HISTORY WHERE OrderId =" + cartItem.getOrderId() +"; "; 
-			}
-			PreparedStatement delStmt = con.prepareStatement(deleteItemsQuery);
-			delStmt.setLong(1, cartItem.getCartId());
-			int rowsDeleted = delStmt.executeUpdate();
-			if (rowsDeleted > 0) {
-			    System.out.println("Rows deleted successfully!");
-			    return true;
+				cartItem.setInvTotalPrice(Float.parseFloat(res.getString("TotalPrice")));
+				cartItem.setInvQuantity(Integer.parseInt(res.getString("Quantity")));
+				cartItem.setOrderSubTotal(Float.parseFloat(res.getString("OrderTotal")));
+				cartItem.setOrderQuantity(Integer.parseInt(res.getString("OrderQuantity")));
+				
+				String deleteItemsQuery = "DELETE FROM  AL_SHOP_CART WHERE CartId = ?; ";
+				PreparedStatement delItemStmt = con.prepareStatement(deleteItemsQuery);
+				delItemStmt.setLong(1, cartItem.getCartId());
+				delItemStmt.executeUpdate();
+
+				float orderSubTotal = cartItem.getOrderSubTotal() - cartItem.getInvTotalPrice();
+				cartItem.setOrderQuantity(cartItem.getOrderQuantity() - cartItem.getInvQuantity());
+				cartItem.setOrderSubTotal(orderSubTotal);
+				updateOrderHistory(cartItem);
 			}
 			con.close();
 		} 
@@ -143,7 +144,7 @@ public class ShopCartCrud {
 		try{
 			String updateQuantityQuery = "UPDATE AL_SHOP_CART SET Quantity = ?, TotalPrice = ? WHERE CartId = ? AND OrderId = ?";
 			PreparedStatement stmt = con.prepareStatement(updateQuantityQuery);
-			System.out.println("in shop cart curd: " + c.getOrderId());
+			System.out.println("in shop cart curd: " + c.getOrderId() + " Quantity: "+c.getQuantity() +"Total price: "+c.getTotalPrice());
 			stmt.setInt(1, c.getQuantity());
 			stmt.setFloat(2, c.getTotalPrice());
 			stmt.setLong(3,c.getCartId());
@@ -151,12 +152,11 @@ public class ShopCartCrud {
 			stmt.executeUpdate();
 		
 			//Calculate the total price and units
-			String selectCartQuery = "SELECT INV.InventoryId,  SC.Quantity*Price AS TotalPrice, Sale, SaleApproved, "
+			String selectCartQuery = "SELECT INV.InventoryId,  SC.TotalPrice, Sale, SaleApproved, "
 					+ " SC.Quantity FROM AL_INVENTORY INV INNER JOIN AL_SHOP_CART SC ON INV.INVENTORYID = SC.INVENTORYID "
 					+ " WHERE ActiveCart = 'Y' AND CartId = ? AND OrderId = ?";
 			
 			PreparedStatement selStmt = con.prepareStatement(selectCartQuery);
-			System.out.println("in shop cart curd: " + c.getOrderId());
 			selStmt.setLong(1, c.getCartId());
 			selStmt.setLong(2, c.getOrderId());
 			ResultSet res = selStmt.executeQuery();
@@ -188,7 +188,7 @@ public class ShopCartCrud {
 		String updateAddrQuery = "UPDATE AL_ORDER_HISTORY SET OrderQuantity = ?, OrderTotal = ? WHERE OrderId = ?";
 		try{
 			PreparedStatement stmt = con.prepareStatement(updateAddrQuery);
-			System.out.println("in shop cart curd for updating the address: " + c.getOrderId());
+			System.out.println("\nin shop cart curd for updating theOH:: " + c.getOrderId() +"O Total: "+c.getOrderSubTotal());
 			stmt.setInt(1, c.getOrderQuantity());
 			stmt.setFloat(2, c.getOrderSubTotal());
 			stmt.setLong(3, c.getOrderId());
@@ -306,7 +306,9 @@ public ArrayList<ShopCart> fetchOrderHistory(long userId){
 		
 		try{
 			//Get the order history for the logged in user
-			String updateUnitQuery = "SELECT OrderId, UserId, OrderTotal, date(OrderDate) AS OrderDate, OrderStatus FROM AL_ORDER_HISTORY WHERE UserId = ?";
+			String updateUnitQuery = "SELECT DISTINCT OH.OrderId, UserId, OrderTotal, date(OrderDate) AS OrderDate, OrderStatus "
+					               +" FROM AL_ORDER_HISTORY OH INNER JOIN AL_SHOP_CART SC ON OH.OrderId = SC.OrderId "
+					               + " WHERE UserId = ? AND SC.ActiveCart = 'N'";
 			
 			PreparedStatement stmt = con.prepareStatement(updateUnitQuery);
 					System.out.println("in shop cart curd for fetching order hisory: ");
@@ -332,19 +334,24 @@ public void insertOrder(ShopCart c) {
     try {
     	Class.forName("com.mysql.jdbc.Driver");
         Connection con = ConnectionFactory.getConnObject();
-    	String selectActiveRecQuery = "SELECT OH.OrderId, OH.OrderTotal, OH.OrderQuantity FROM AL_ORDER_HISTORY OH INNER JOIN AL_SHOP_CART SC "
+    	String selectActiveRecQuery = "SELECT OH.OrderId, OH.OrderTotal, OH.OrderQuantity FROM AL_ORDER_HISTORY OH "
+    								  +" INNER JOIN AL_SHOP_CART SC ON SC.OrderId = OH.OrderId "
     								  +" WHERE UserId = ? AND ActiveCart = 'Y'";
+    	
     	PreparedStatement checkStmt = con.prepareStatement(selectActiveRecQuery);
     	checkStmt.setLong(1, c.getUserId());
     	ResultSet res = checkStmt.executeQuery();
-
+    	float unitPrice = 0;
+		float sale =0;
+		
 		ShopCart cart = new ShopCart();
     	if (res.next()) {
 	    	 c.setOrderId(Long.parseLong(res.getString("OrderId")));
 	    	 c.setOrderSubTotal(Float.parseFloat(res.getString("OrderTotal")));
 	    	 c.setOrderQuantity(Integer.parseInt(res.getString("OrderQuantity")));
-	    	 
-	    	 String selectItemQuery = " SELECT SC.CartId, SC.Quantity, INV.Price, SC.TotalPrice FROM AL_SHOP_CART SC INNER JOIN AL_INVENTORY INV ON" 
+	    	 System.out.println("\nInsert order db: Order id:+c.getOrderId()");
+	    	 String selectItemQuery = " SELECT SC.CartId, SC.Quantity, INV.Price, SC.TotalPrice, IFNULL(INV.Sale, 0) AS Sale, "
+	    			     			 +" INV.SaleApproved FROM AL_SHOP_CART SC INNER JOIN AL_INVENTORY INV ON" 
 	    			                 +" SC.InventoryId = INV.InventoryId WHERE OrderId = ? AND INV.InventoryId = ? AND ActiveCart = 'Y'";
 	    	 
 	     	 PreparedStatement itemStmt = con.prepareStatement(selectItemQuery);
@@ -355,13 +362,17 @@ public void insertOrder(ShopCart c) {
 	     	 if (itemResult.next()) {
 	     		c.setCartId(Long.parseLong(itemResult.getString("CartId")));
 	     		c.setInvQuantity(Integer.parseInt(itemResult.getString("Quantity")));
-				c.setUnitPrice(Float.parseFloat(itemResult.getString("Price")));
 				c.setInvTotalPrice(Float.parseFloat(itemResult.getString("TotalPrice")));
 				
-				System.out.println("c.getOrderId() 2: " +c.getOrderId());
+				unitPrice = Float.parseFloat(itemResult.getString("Price"));
+				sale = Float.parseFloat(itemResult.getString("Sale"));
+				
+				c.setUnitPrice(unitPrice-((sale/100)*unitPrice));
+				
+				System.out.println("Item already exists: " + c.getCartId());
 				cart item = new cart();
 				item.setOrderId(c.getOrderId());
-				item.setCartId(c.getOrderId());
+				item.setCartId(c.getCartId());
 				item.setQuantity(c.getInvQuantity() + 1);
 				item.setTotalPrice(c.getInvTotalPrice() + c.getUnitPrice());
 				
@@ -374,8 +385,14 @@ public void insertOrder(ShopCart c) {
 	 			Inventory item = new Inventory();
 	 			int inventoryId = (int)c.getInventoryId();
 	 			item = inv.fetchInventoryDetails(inventoryId);
-
-	 			c.setUnitPrice(item.getPrice());
+	 			unitPrice = item.getPrice();
+	 			sale = item.getSale();
+				 if(item.getSaleApproved() == "Approved"){
+					 c.setUnitPrice(unitPrice-((sale/100)*unitPrice));
+	                }
+	                else{
+	                 c.setUnitPrice(unitPrice);
+	                }
 	     		insertItemInShopCart(c);
 	     	 }
 
@@ -389,7 +406,14 @@ public void insertOrder(ShopCart c) {
 	 			Inventory item = new Inventory();
 	 			int inventoryId = (int)c.getInventoryId();
 	 			item = inv.fetchInventoryDetails(inventoryId);
-	 			c.setUnitPrice(item.getPrice());
+	 			unitPrice = item.getPrice();
+	 			sale = item.getSale();
+				 if(item.getSaleApproved() == "Approved"){
+					 c.setUnitPrice(unitPrice-((sale/100)*unitPrice));
+	                }
+	                else{
+	                 c.setUnitPrice(unitPrice);
+	                }
 	     		cart = insertNewOrder(c);
 	     		insertItemInShopCart(cart);
      	}
@@ -460,7 +484,7 @@ public void insertOrder(ShopCart c) {
         try {
             System.out.println("fetchCartItems insiseddvcdhjhdsj !!!");
             String selectCartQuery = "SELECT CartId, SC.OrderId, SC.InventoryId, SC.Quantity, ActiveCart, TotalPrice, INV.SaleApproved, "
-                    + "INV.Price AS UnitPrice,ProductName, ImageName, IFNULL(INV.Sale, 0) AS Sale, CartUpdateDate, UserId, OH.VendorId, "
+                    + "INV.Price AS UnitPrice,ProductName, ImageName, IFNULL(INV.Sale, 0) AS Sale, CartUpdateDate, UserId, OH.VendorId, OrderStatus, "
                     + "OrderTotal, OrderDate, INV.Quantity AS InvQuantity, IFNULL(INV.UnitSold, 0) AS UnitSold FROM AL_SHOP_CART SC INNER JOIN AL_ORDER_HISTORY OH ON SC.OrderId = OH.OrderId "
                     + "INNER JOIN AL_INVENTORY INV ON SC.InventoryId = INV.InventoryId WHERE UserId= ? AND SC.OrderId = ?";
             
@@ -480,13 +504,17 @@ public void insertOrder(ShopCart c) {
                 cart.setInvQuantity(Integer.parseInt(res.getString("Quantity")));
                 cart.setInvTotalPrice(Float.parseFloat(res.getString("TotalPrice")));
                 cart.setUnitPrice(Float.parseFloat(res.getString("UnitPrice")));
+                cart.setOrderSubTotal(Float.parseFloat(res.getString("OrderTotal")));
+                cart.setOrderDate(res.getString("OrderDate"));
                 cart.setProductName(res.getString("ProductName"));
+                cart.setOrderStatus(res.getString("OrderStatus"));
                 cart.setImageName(res.getString("ImageName"));
+                cart.setDeliveryAddress(res.getString("DeliveryAddress"));
                 
                 boolean IsActive = false;
                 
                 if(res.getString("ActiveCart") != null){
-                    IsActive    = res.getString("ActiveCart").equals("Y")? true : false;
+                    IsActive = res.getString("ActiveCart").equals("Y")? true : false;
                 }
 
                 cart.setIsActive(IsActive);

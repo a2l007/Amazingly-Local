@@ -64,7 +64,7 @@
                  	<% if(session.getAttribute("sessionExists")!=null) {%>
                  	
                  	 <li> Welcome <%=session.getAttribute("userName")%><form action="logout" method="get">
-                    <input type="submit" value="Logout"></form> </li>
+                    <input class="btn btn-primary" type="submit" value="Logout"></form> </li>
                  	<%}
 						else { %>
                     <li ><a href="loginlanding.html" >Login</a>
@@ -121,7 +121,7 @@
         <div class="container">
             <div class="navbar-header">
 
-                <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
+                <a class="navbar-brand home" href="index.jsp" data-animate-hover="bounce">
                     <img src="img/al_logo.png" alt="Obaju logo" class="lg" class="hidden-xs">
                     <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Amazingly Local!</span>
                 </a>
@@ -152,7 +152,7 @@
             <div class="navbar-collapse collapse" id="navigation">
 
                 <ul class="nav navbar-nav navbar-left">
-                    <li class="active"><a href="index.html">Home</a>
+                    <li class="active"><a href="index.jsp">Home</a>
                     </li>
                     <li class="dropdown yamm-fw">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Shop <b class="caret"></b></a>
@@ -232,9 +232,9 @@
                                                 </li>
                                              <% }
 												else if(session.getAttribute("userType").equals("C")){ %>
-												<li><a href="CustomerOrder.jsp">Order History</a>
-                                                </li>
                                                 <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="CustomerOrders.jsp">Order History</a>
                                                 </li>
                                                 <li><a href="logout">Logout</a>
                                                 </li>
@@ -383,12 +383,13 @@
                                             <td><a href="viewproduct?inventoryId="<%=invId%>><%=name%></a>
                                             </td>
                                             <td colspan="2">
-                                            <input name = "itemQuantity" type="number" value=<%=units%> class="form-control" min="1" max=<%=quantityAvailable%>>                                            
+                                            <input name = "itemQuantity" type="number" value=<%=units%> class="form-control">                                            
                                             </td>
                                             <td>$<%=unitPrice%></td>
                                             <td><%=discount%>%</td>
                                             <td>$<%=totalPrice%>
-                                            <input type="hidden" name="totalPrice" value="<%=totalPrice%>"></td>
+                                            <input type="hidden" name="discount" value="<%=discount%>">
+                                            <input type="hidden" name="unitPrice" value="<%=unitPrice%>"></td>
                                             <td><a href="#myModal_<%=cartId%>" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
                                                 <input type="hidden" name="cartId" value="<%=cartId%>">
                                             </td>
@@ -408,7 +409,7 @@
 
                             <div class="box-footer">
                                 <div class="pull-left">
-                                    <a href="category.html" class="btn btn-default"><i class="fa fa-chevron-left"></i> Continue shopping</a>
+                                    <a href="index.jsp" class="btn btn-default"><i class="fa fa-chevron-left"></i> Continue shopping</a>
                                 </div>
                                 <div class="pull-right">
                                     <button class="btn btn-default" onclick="updateCart(); return false;" ><i class="fa fa-refresh"></i> Update basket</button>

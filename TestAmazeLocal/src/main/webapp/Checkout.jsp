@@ -68,7 +68,7 @@
                  	<% if(session.getAttribute("sessionExists")!=null) {%>
                  	
                  	 <li> Welcome <%=session.getAttribute("userName")%><form action="logout" method="get">
-                    <input type="submit" value="Logout"></form> </li>
+                    <input type="submit" class="btn btn-primary" value="Logout"></form> </li>
                  	<%}
 						else { %>
                     <li ><a href="loginlanding.html" >Login</a>
@@ -125,7 +125,7 @@
         <div class="container">
             <div class="navbar-header">
 
-                <a class="navbar-brand home" href="index.html" data-animate-hover="bounce">
+                <a class="navbar-brand home" href="index.jsp" data-animate-hover="bounce">
                     <img src="img/al_logo.png" alt="Obaju logo" class="lg" class="hidden-xs">
                     <img src="img/logo-small.png" alt="Obaju logo" class="visible-xs"><span class="sr-only">Amazingly Local!</span>
                 </a>
@@ -156,7 +156,7 @@
             <div class="navbar-collapse collapse" id="navigation">
 
                 <ul class="nav navbar-nav navbar-left">
-                    <li class="active"><a href="index.html">Home</a>
+                    <li class="active"><a href="index.jsp">Home</a>
                     </li>
                     <li class="dropdown yamm-fw">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200"> Shop <b class="caret"></b></a>
@@ -237,6 +237,8 @@
                                              <% }
 												else if(session.getAttribute("userType").equals("C")){ %>
                                                 <li><a href="changepass.html">Change Password</a>
+                                                </li>
+                                                <li><a href="CustomerOrders.jsp">Order History</a>
                                                 </li>
                                                 <li><a href="logout">Logout</a>
                                                 </li>
@@ -560,82 +562,6 @@
         </div>
         
         <!-- *** FOOTER ***
- _________________________________________________________ -->
-        <div id="footer" data-animate="fadeInUp">
-            <div class="container">
-                <div class="row">
-                <div class="col-md-1">
-                      </div>
-                    <div class="col-md-3">
-                        <h4>Pages</h4>
-
-                        <ul>
-                            <li><a href="text.html">About us</a>
-                            </li>
-                            <li><a href="text.html">Terms and conditions</a>
-                            </li>
-                            <li><a href="faq.html">FAQ</a>
-                            </li>
-                            <li><a href="contact.html">Contact us</a>
-                            </li>
-                        </ul>
-
-                        </div>
-                        <div class="col-md-1">
-                      </div>
-						<div class="col-md-3">
-                        <h4>User section</h4>
-
-                        <ul>
-                            <li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
-                            </li>
-                            <li><a href="register.html">Register</a>
-                            </li>
-                        </ul>
-
-                        <hr class="hidden-md hidden-lg hidden-sm">
-
-                    </div>
-                    <!-- /.col-md-3 -->
-
-                    
-					<div class="col-md-1">
-                      </div>
-                    <div class="col-md-3">
-
-                        <h4>Where to find us</h4>
-
-                        <p><strong>Amazingly local</strong>
-                            <br>107 S Indiana Ave
-                            <br>Bloomington
-                            <br>IN 47405
-                            <br>
-                            <strong>USA</strong>
-                        </p>
-
-                        <a href="contact.html">Go to contact page</a>
-
-                        <hr class="hidden-md hidden-lg">
-
-                    </div>
-                    <!-- /.col-md-3 -->
-
-
-
-                </div>
-                <!-- /.row -->
-
-            </div>
-            <!-- /.container -->
-        </div>
-        <!-- /#footer -->
-
-        <!-- /#footer -->
-
-        <!-- *** FOOTER END *** -->
-
-
-
 
         <!-- *** COPYRIGHT ***
  _________________________________________________________ -->

@@ -10,7 +10,9 @@ function updateCart(){
 		    cartItem.CartId = curr_row.find('input[name*="cartId"]').val();
 		    cartItem.Quantity = curr_row.find('input[name*="itemQuantity"]').val();
 	        cartItem.OrderId = curr_row.find('input[name*="orderId"]').val();
-	        cartItem.TotalPrice = curr_row.find('input[name*="totalPrice"]').val();
+	        var discount = curr_row.find('input[name*="discount"]').val();
+	        var totalPrice = curr_row.find('input[name*="unitPrice"]').val() * cartItem.Quantity;
+	        cartItem.TotalPrice = totalPrice - ((discount/100)*totalPrice);
 	        items.push(cartItem);
     });
 	 
@@ -44,8 +46,6 @@ function DeleteCartItem(cartId, orderId){
          //hide the modal
      	 $('#myModal_'+cartId).modal('hide');
      	 
-         if(data == "success"){
-         
          //Hide the cart td
          $("#trCart_"+cartId).hide();
      	 //Set the success message in the success modal
@@ -53,9 +53,6 @@ function DeleteCartItem(cartId, orderId){
     	 
     	 //Show the success modal
        	 $('#divSuccessModal').modal('show');
-        } else{
-        	//alert("Error occured!");
-         }
         },  
         error: function () {  
         	 //hide the modal

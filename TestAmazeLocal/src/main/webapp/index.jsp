@@ -3,6 +3,8 @@
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="com.iu.amazelocal.models.ShopCart"%>
+<%@page import="com.iu.amazelocal.db.ShopCartCrud"%>
 <html lang="en">
 
 <head>
@@ -59,7 +61,7 @@
                  	<% if(session.getAttribute("sessionExists")!=null) {%>
                  	
                  	 <li> Welcome <%=session.getAttribute("userName")%><form action="logout" method="get">
-                    <input type="submit" value="Logout"></form> </li>
+                    <input type="submit"  class="btn btn-primary" value="Logout"></form> </li>
                  	<%}
 						else { %>
                     <li ><a href="loginlanding.html" >Login</a>
@@ -129,9 +131,7 @@
                         <span class="sr-only">Toggle search</span>
                         <i class="fa fa-search"></i>
                     </button>
-                    <a class="btn btn-default navbar-toggle" href="basket.html">
-                        <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs">3 items in cart</span>
-                    </a>
+                    
                 </div>
             </div>
             <!--/.navbar-header -->
@@ -272,9 +272,16 @@
 
            <!-- COPY FOR SEARCH BAR FROM HERE -->
             <div class="navbar-buttons">
-
+ 			<%  ShopCartCrud cart = new ShopCartCrud();
+             ArrayList<ShopCart> cartItems = new ArrayList<ShopCart>();
+             ShopCart orderDetails = new ShopCart();
+             Long uId = (Long)session.getAttribute("userId");
+             orderDetails = cart.fetchOrderDetails(uId);
+             int OrderQuantity = 0;
+             if(orderDetails != null){
+                 OrderQuantity = orderDetails.getOrderQuantity();}%>
                 <div class="navbar-collapse collapse right" id="basket-overview">
-                    <a href="basket.html" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">3 items in cart</span></a>
+                    <a href="cart.jsp" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"><%=OrderQuantity %> items in cart</span></a>
                 </div>
                 <!--/.nav-collapse -->
 
